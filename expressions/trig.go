@@ -1,7 +1,6 @@
 package diff
 
 import (
-	"fmt"
 	"github.com/universe-10th-calculus/sets"
 	"github.com/universe-10th-calculus/ops"
 	"github.com/universe-10th-calculus/errors"
@@ -13,8 +12,8 @@ type TrigFunctionExpr struct {
 }
 
 
-func (trig TrigFunctionExpr) String() string {
-	return fmt.Sprintf("%s(%s)", trig.StandardName(), trig.arg)
+func (trig TrigFunctionExpr) Arguments() []Expression {
+	return []Expression{ trig.arg }
 }
 
 
