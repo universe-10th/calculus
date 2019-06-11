@@ -28,17 +28,17 @@ func mul(a, b, zero sets.Number) bool {
 }
 
 
-func Mul(terms ...sets.Number) sets.Number {
-	if terms == nil {
+func Mul(factors ...sets.Number) sets.Number {
+	if factors == nil {
 		return nil
-	} else if len(terms) == 1 {
-		return terms[0]
+	} else if len(factors) == 1 {
+		return factors[0]
 	}
-	set := sets.BroaderAll(sets.ClosestAll(terms...)...)
+	set := sets.BroaderAll(sets.ClosestAll(factors...)...)
 	zero := Zero(set)
 	current := One(set)
-	terms = sets.UpCastTo(set, terms...)
-	for _, term := range terms {
+	factors = sets.UpCastTo(set, factors...)
+	for _, term := range factors {
 		if mul(current, term, zero) {
 			return zero
 		}
