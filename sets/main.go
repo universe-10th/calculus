@@ -158,6 +158,20 @@ func ClosestAll(a ...Number) []Set {
 }
 
 
+func BelongsTo(a Number, set Set) bool {
+	switch va := a.(type) {
+	case *big.Float:
+		return set == R
+	case *big.Rat:
+		return set == R || set == Q
+	case *big.Int:
+		return set == Z || (va.Sign() >= 0 && set == N0) || (va.Sign() > 0 && set == N) || set == Q || set == R
+	default:
+		return false
+	}
+}
+
+
 func upCast(a Number, s Set) Number {
 	switch va := a.(type) {
 	case *big.Int:
