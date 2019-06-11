@@ -116,7 +116,7 @@ func broader(a, b Set) Set {
 }
 
 
-func broaderAll(a Set, more ...Set) Set {
+func BroaderAll(a Set, more ...Set) Set {
 	x := a
 	for _, s := range more {
 		x = broader(x, s)
@@ -175,7 +175,7 @@ func UpCast(a ...Number) []Number {
 	for index, value := range a {
 		sets[index] = closest(value)
 	}
-	toSet := broaderAll(sets[0], sets[1:]...)
+	toSet := BroaderAll(sets[0], sets[1:]...)
 	result := make([]Number, len(a))
 	for index, value := range a {
 		result[index] = upCast(value, toSet)
