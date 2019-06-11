@@ -69,3 +69,15 @@ func Log(power, base sets.Number) sets.Number {
 	fpower := cast[1].(*big.Float)
 	return big.NewFloat(0).Quo(bigfloat.Log(fpower), bigfloat.Log(fbase))
 }
+
+
+func Ln(power sets.Number) sets.Number {
+	cast := sets.UpCastTo(sets.R, power)
+	return bigfloat.Log(cast[0].(*big.Float))
+}
+
+
+func Exp(exponent sets.Number) sets.Number {
+	cast := sets.UpCastTo(sets.R, exponent)
+	return bigfloat.Exp(cast[0].(*big.Float))
+}
