@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/universe-10th-calculus/sets"
 	"math/big"
+	"github.com/universe-10th-calculus/errors"
 )
 
 
@@ -26,21 +27,25 @@ type Arguments map[Variable]sets.Number
 
 type Expression interface {
 	Evaluate(arguments Arguments) (sets.Number, error)
-	Derivative(wrt Variable) Expression
+	Derivative(wrt Variable) (Expression, error)
 	fmt.Stringer
 }
 
 
 func (variable Variable) Evaluate(args Arguments) (sets.Number, error) {
-	return args[variable], nil
+	if value, ok := args[variable]; !ok {
+		return nil, errors.UndefinedValue
+	} else {
+		return value, nil
+	}
 }
 
 
-func (variable Variable) Derivative(wrt Variable) Expression {
+func (variable Variable) Derivative(wrt Variable) (Expression, error) {
 	if variable == wrt {
-		return Constant{one}
+		return Constant{one}, nil
 	} else {
-		return Constant{zero}
+		return Constant{zero}, nil
 	}
 }
 
@@ -55,8 +60,8 @@ func (constant Constant) Evaluate(args Arguments) (sets.Number, error) {
 }
 
 
-func (constant Constant) Derivative(wrt Variable) Expression {
-	return Constant{zero}
+func (constant Constant) Derivative(wrt Variable) (Expression, error) {
+	return Constant{zero}, nil
 }
 
 
