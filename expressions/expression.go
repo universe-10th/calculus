@@ -104,7 +104,8 @@ func Var(name string) Variable {
 
 
 func Num(n sets.Number) Constant {
-	return Constant{n}
+	wrapped, _ := sets.Wrap(sets.Clone(n))
+	return Constant{wrapped}
 }
 
 
