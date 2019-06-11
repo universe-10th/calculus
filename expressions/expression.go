@@ -1,4 +1,4 @@
-package diff
+package expressions
 
 import (
 	"fmt"
