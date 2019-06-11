@@ -34,6 +34,12 @@ type Expression interface {
 }
 
 
+type SelfContained interface {
+	Expression
+	IsSelfContained() bool
+}
+
+
 func (variable Variable) CollectVariables(variables Variables) {
 	variables[variable] = true
 }
@@ -62,6 +68,11 @@ func (variable Variable) String() string {
 }
 
 
+func (variable Variable) IsSelfContained() bool {
+	return true
+}
+
+
 func (constant Constant) CollectVariables(Variables) {
 	// Does nothing
 }
@@ -79,6 +90,11 @@ func (constant Constant) Derivative(wrt Variable) (Expression, error) {
 
 func (constant Constant) String() string {
 	return fmt.Sprintf("%s", constant.number)
+}
+
+
+func (constant Constant) IsSelfContained() bool {
+	return true
 }
 
 

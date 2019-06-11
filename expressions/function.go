@@ -18,6 +18,11 @@ type FunctionExpr struct {
 }
 
 
+func (function FunctionExpr) IsSelfContained() bool {
+	return true
+}
+
+
 func (function FunctionExpr) StandardName() string {
 	return function.standardName
 }
