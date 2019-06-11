@@ -7,28 +7,29 @@ import (
 	"github.com/universe-10th-calculus/errors"
 )
 
-type TrigFunction struct {
+type TrigFunctionExpr struct {
+	FunctionExpr
 	arg   Expression
 }
 
 
+func (trig TrigFunctionExpr) String() string {
+	return fmt.Sprintf("%s(%s)", trig.StandardName(), trig.arg)
+}
+
+
 type SinExpr struct {
-	TrigFunction
+	TrigFunctionExpr
 }
 
 
 type CosExpr struct {
-	TrigFunction
+	TrigFunctionExpr
 }
 
 
 type TanExpr struct {
-	TrigFunction
-}
-
-
-func (sin SinExpr) String() string {
-	return fmt.Sprintf("sin(%s)", sin.arg)
+	TrigFunctionExpr
 }
 
 
@@ -46,11 +47,6 @@ func (sin SinExpr) Derivative(wrt Variable) Expression {
 }
 
 
-func (cos CosExpr) String() string {
-	return fmt.Sprintf("cos(%s)", cos.arg)
-}
-
-
 func (cos CosExpr) Evaluate(args Arguments) (sets.Number, error) {
 	if result, err := cos.arg.Evaluate(args); err != nil {
 		return ops.Cos(result), nil
@@ -62,11 +58,6 @@ func (cos CosExpr) Evaluate(args Arguments) (sets.Number, error) {
 
 func (cos CosExpr) Derivative(wrt Variable) Expression {
 	return nil
-}
-
-
-func (tan TanExpr) String() string {
-	return fmt.Sprintf("tan(%s)", tan.arg)
 }
 
 
@@ -97,15 +88,15 @@ func (tan TanExpr) Derivative(wrt Variable) Expression {
 
 
 func Sin(arg Expression) SinExpr {
-	return SinExpr{TrigFunction{arg}}
+	return SinExpr{TrigFunctionExpr{FunctionExpr{"sin"},arg}}
 }
 
 
 func Cos(arg Expression) CosExpr {
-	return CosExpr{TrigFunction{arg}}
+	return CosExpr{TrigFunctionExpr{FunctionExpr{"cos"},arg}}
 }
 
 
 func Tan(arg Expression) TanExpr {
-	return TanExpr{TrigFunction{arg}}
+	return TanExpr{TrigFunctionExpr{FunctionExpr{"tan"},arg}}
 }
