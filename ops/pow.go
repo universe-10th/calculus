@@ -64,21 +64,8 @@ func Root(base, exponent sets.Number) sets.Number {
 
 
 func Log(power, base sets.Number) sets.Number {
-	set := sets.BroaderAll(sets.ClosestAll(base, power)...)
-	cast := sets.UpCastTo(set, base, power)
-	base = cast[0]
-	power = cast[1]
-	switch vb := base.(type) {
-	case *big.Int:
-		fpower := big.NewFloat(0).SetInt(power.(*big.Int))
-		fbase := big.NewFloat(0).SetInt(vb)
-		return big.NewFloat(0).Quo(bigfloat.Log(fpower), bigfloat.Log(fbase))
-	case *big.Rat:
-		fpower := big.NewFloat(0).SetRat(power.(*big.Rat))
-		fbase := big.NewFloat(0).SetRat(vb)
-		return big.NewFloat(0).Quo(bigfloat.Log(fpower), bigfloat.Log(fbase))
-	case *big.Float:
-		return big.NewFloat(0).Quo(bigfloat.Log(power.(*big.Float)), bigfloat.Log(vb))
-	}
-	return nil
+	cast := sets.UpCastTo(sets.R, base, power)
+	fbase := cast[0].(*big.Float)
+	fpower := cast[1].(*big.Float)
+	return big.NewFloat(0).Quo(bigfloat.Log(fpower), bigfloat.Log(fbase))
 }
