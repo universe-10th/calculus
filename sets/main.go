@@ -116,9 +116,12 @@ func broader(a, b Set) Set {
 }
 
 
-func BroaderAll(a Set, more ...Set) Set {
-	x := a
-	for _, s := range more {
+func BroaderAll(sets ...Set) Set {
+	if sets == nil {
+		return Invalid
+	}
+	x := sets[0]
+	for _, s := range sets[1:] {
 		x = broader(x, s)
 	}
 	return x
@@ -146,6 +149,15 @@ func closest(a Number) Set {
 }
 
 
+func ClosestAll(a ...Number) []Set {
+	sets := make([]Set, len(a))
+	for index, value := range a {
+		sets[index] = closest(value)
+	}
+	return sets
+}
+
+
 func upCast(a Number, s Set) Number {
 	switch va := a.(type) {
 	case *big.Int:
@@ -167,18 +179,19 @@ func upCast(a Number, s Set) Number {
 }
 
 
-func UpCast(a ...Number) []Number {
-	if a == nil {
-		return nil
-	}
-	sets := make([]Set, len(a))
-	for index, value := range a {
-		sets[index] = closest(value)
-	}
-	toSet := BroaderAll(sets[0], sets[1:]...)
+func UpCastTo(toSet Set, a ...Number) []Number {
 	result := make([]Number, len(a))
 	for index, value := range a {
 		result[index] = upCast(value, toSet)
 	}
 	return result
+}
+
+
+func UpCast(a ...Number) []Number {
+	if a == nil {
+		return nil
+	}
+	toSet := BroaderAll(ClosestAll(a...)...)
+	return UpCastTo(toSet, a...)
 }
