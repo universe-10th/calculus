@@ -8,7 +8,7 @@ import (
 
 func Zero(set sets.Set) sets.Number {
 	switch set {
-	case sets.N0, sets.Z:
+	case sets.N, sets.N0, sets.Z:
 		return big.NewInt(0)
 	case sets.Q:
 		return big.NewRat(0, 1)
