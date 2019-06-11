@@ -47,6 +47,11 @@ func (ln LnExpr) Arguments() []Expression {
 }
 
 
+func (ln LnExpr) CollectVariables(variables Variables) {
+	ln.arg.CollectVariables(variables)
+}
+
+
 type LogExpr struct {
 	FunctionExpr
 	power   Expression
@@ -87,6 +92,12 @@ func (log LogExpr) Arguments() []Expression {
 }
 
 
+func (log LogExpr) CollectVariables(variables Variables) {
+	log.power.CollectVariables(variables)
+	log.base.CollectVariables(variables)
+}
+
+
 type ExpExpr struct {
 	FunctionExpr
 	exponent Expression
@@ -109,6 +120,11 @@ func (exp ExpExpr) Evaluate(args Arguments) (sets.Number, error) {
 
 func (exp ExpExpr) Arguments() []Expression {
 	return []Expression{ exp.exponent }
+}
+
+
+func (exp ExpExpr) CollectVariables(variables Variables) {
+	 exp.exponent.CollectVariables(variables)
 }
 
 

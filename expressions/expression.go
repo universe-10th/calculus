@@ -20,15 +20,22 @@ type Constant struct {
 type Variable struct {
 	name string
 }
+type Variables map[Variable]bool
 
 
 type Arguments map[Variable]sets.Number
 
 
 type Expression interface {
+	CollectVariables(Variables)
 	Evaluate(arguments Arguments) (sets.Number, error)
 	Derivative(wrt Variable) (Expression, error)
 	fmt.Stringer
+}
+
+
+func (variable Variable) CollectVariables(variables Variables) {
+	variables[variable] = true
 }
 
 
@@ -52,6 +59,11 @@ func (variable Variable) Derivative(wrt Variable) (Expression, error) {
 
 func (variable Variable) String() string {
 	return variable.name
+}
+
+
+func (constant Constant) CollectVariables(Variables) {
+	// Does nothing
 }
 
 

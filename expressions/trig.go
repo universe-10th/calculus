@@ -17,6 +17,11 @@ func (trig TrigFunctionExpr) Arguments() []Expression {
 }
 
 
+func (trig TrigFunctionExpr) CollectVariables(variables Variables) {
+	trig.arg.CollectVariables(variables)
+}
+
+
 type SinExpr struct {
 	TrigFunctionExpr
 }
