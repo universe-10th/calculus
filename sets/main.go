@@ -59,9 +59,15 @@ func Wrap(value interface{}) (Number, Set) {
 		return big.NewFloat(float64(c)), R
 	case float64:
 		return big.NewFloat(float64(c)), R
+	case *big.Int:
+		return c, closest(c)
+	case *big.Rat:
+		return c, Q
+	case *big.Float:
+		return c, R
 	default:
-		panic("unsupported number type. Only int64, int32, int16, int8, uint32, uint16, uint8, float64, float43 " +
-			  "are supported")
+		panic("unsupported number type. Only int64, int32, int16, int8, uint32, uint16, uint8, float64, float32 " +
+			  "and math/big types (they are a no-op) are supported")
 	}
 }
 
