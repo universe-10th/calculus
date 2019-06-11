@@ -45,11 +45,11 @@ func Sub(minuend sets.Number, subtrahends ...sets.Number) sets.Number {
 	subtrahend = cast[1]
 	switch vm := minuend.(type) {
 	case *big.Int:
-		return vm.Add(vm, subtrahend.(*big.Int))
+		return vm.Sub(vm, subtrahend.(*big.Int))
 	case *big.Rat:
-		return vm.Add(vm, subtrahend.(*big.Rat))
+		return vm.Sub(vm, subtrahend.(*big.Rat))
 	case *big.Float:
-		return vm.Add(vm, subtrahend.(*big.Float))
+		return vm.Sub(vm, subtrahend.(*big.Float))
 	}
 	return nil
 }
