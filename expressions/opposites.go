@@ -44,8 +44,12 @@ func (negated NegatedExpr) String() string {
 }
 
 
-func Negated(arg Expression) NegatedExpr {
-	return NegatedExpr{arg}
+func Negated(arg Expression) Expression {
+	if neg, ok := arg.(NegatedExpr); ok {
+		return neg.arg
+	} else {
+		return NegatedExpr{arg}
+	}
 }
 
 
@@ -64,7 +68,17 @@ func (inverse InverseExpr) Evaluate(args Arguments) (sets.Number, error) {
 
 
 func (inverse InverseExpr) Derivative(wrt Variable) (Expression, error) {
-	// TODO
+	if derivative, err := inverse.arg.Derivative(wrt); err != nil {
+		return nil, err
+	} else {
+		variables := Variables{}
+		derivative.CollectVariables(variables)
+		if _, ok := variables[wrt]; !ok {
+			return Num(0), nil
+		} else {
+			return Negated(Mul(derivative, Pow(inverse.arg, Num(-2)))), nil
+		}
+	}
 	return nil, nil
 }
 
@@ -80,6 +94,10 @@ func (inverse InverseExpr) String() string {
 }
 
 
-func Inverse(arg Expression) InverseExpr {
-	return InverseExpr{arg}
+func Inverse(arg Expression) Expression {
+	if inv, ok := arg.(InverseExpr); ok {
+		return inv.arg
+	} else {
+		return InverseExpr{arg}
+	}
 }
