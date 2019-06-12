@@ -4,10 +4,69 @@ import (
 	"github.com/universe-10th-calculus/sets"
 	"github.com/universe-10th-calculus/ops"
 	"github.com/universe-10th-calculus/errors"
+	"fmt"
 )
 
 
-// TODO the power (^) operator goes here
+type PowExpr struct {
+	base     Expression
+	exponent Expression
+}
+
+
+func (pow PowExpr) wrappedPow(base, exponent sets.Number) (result sets.Number, err error) {
+	defer func(){
+		if r := recover(); r != nil {
+			result = nil
+			err = errors.InvalidPowerOperation
+		}
+	}()
+	result = ops.Pow(base, exponent)
+	return
+}
+
+
+func (pow PowExpr) Evaluate(args Arguments) (sets.Number, error) {
+	if base, err := pow.base.Evaluate(args); err != nil {
+		return nil, err
+	} else if exponent, err := pow.exponent.Evaluate(args); err != nil {
+		return nil, err
+	} else {
+		return pow.wrappedPow(base, exponent)
+	}
+}
+
+
+func (pow PowExpr) Derivative(wrt Variable) (Expression, error) {
+	// TODO
+	// Say we have f(x), g(x)
+	// d[f(x)^g(x)]/dx = f(x)^(g(x)-1) * [g(x)*df(x)/dx + f(x)*ln(f(x))*dg(x)/dx]
+	// TODO please note: we could use CollectVariables to tell whether
+	// TODO wrt is included in either the base or exponent expressions and
+	// TODO generate the special cases like f(x)^n, or a^f(x).
+	return nil, nil
+}
+
+
+func (pow PowExpr) CollectVariables(variables Variables) {
+	pow.base.CollectVariables(variables)
+	pow.exponent.CollectVariables(variables)
+}
+
+
+func (pow PowExpr) String() string {
+	baseStr := pow.base.String()
+	if _, ok := pow.base.(SelfContained); !ok {
+		baseStr = "(" + baseStr + ")"
+	}
+	exponentStr := pow.exponent.String()
+	if _, ok := pow.exponent.(SelfContained); !ok {
+		if _, ok := pow.exponent.(NegatedExpr); !ok {
+			exponentStr = "(" + exponentStr + ")"
+		}
+	}
+	return fmt.Sprintf("%s^%s", baseStr, exponentStr)
+}
 
 
 type LnExpr struct {
@@ -125,6 +184,11 @@ func (exp ExpExpr) Arguments() []Expression {
 
 func (exp ExpExpr) CollectVariables(variables Variables) {
 	 exp.exponent.CollectVariables(variables)
+}
+
+
+func Pow(base, exponent Expression) PowExpr {
+	return PowExpr{base, exponent}
 }
 
 
