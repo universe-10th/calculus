@@ -65,6 +65,6 @@ func flattenTerms(terms []Expression) []Expression {
 }
 
 
-func Add(terms ...Expression) AddExpr {
+func Add(terms ...Expression) Expression {
 	return AddExpr{flattenTerms(terms)}
 }

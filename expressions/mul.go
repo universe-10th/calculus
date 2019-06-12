@@ -79,6 +79,6 @@ func flattenFactors(factors []Expression) []Expression {
 }
 
 
-func Mul(factors ...Expression) MulExpr {
+func Mul(factors ...Expression) Expression {
 	return MulExpr{flattenFactors(factors)}
 }
