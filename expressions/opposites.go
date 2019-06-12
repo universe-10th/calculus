@@ -47,3 +47,39 @@ func (negated NegatedExpr) String() string {
 func Negated(arg Expression) NegatedExpr {
 	return NegatedExpr{arg}
 }
+
+
+type InverseExpr struct {
+	arg Expression
+}
+
+
+func (inverse InverseExpr) Evaluate(args Arguments) (sets.Number, error) {
+	if result, err := inverse.arg.Evaluate(args); err != nil {
+		return nil, err
+	} else {
+		return ops.Inv(result), nil
+	}
+}
+
+
+func (inverse InverseExpr) Derivative(wrt Variable) (Expression, error) {
+	// TODO
+	return nil, nil
+}
+
+
+func (inverse InverseExpr) CollectVariables(variables Variables) {
+	inverse.arg.CollectVariables(variables)
+}
+
+
+func (inverse InverseExpr) String() string {
+	// TODO
+	return ""
+}
+
+
+func Inverse(arg Expression) InverseExpr {
+	return InverseExpr{arg}
+}
