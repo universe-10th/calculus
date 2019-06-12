@@ -7,7 +7,12 @@ import (
 )
 
 
-func intPow(base, exponent *big.Int) *big.Int {
+func intPow(base, exponent *big.Int) sets.Number {
+	if exponent.Sign() < 0 {
+		invResult := intPow(base, Neg(exponent).(*big.Int)).(*big.Int)
+		return big.NewRat(0, 1).SetFrac(oneInt, invResult)
+	}
+
 	if exponent.Sign() == 0 {
 		return big.NewInt(1)
 	}
@@ -32,27 +37,96 @@ func intPow(base, exponent *big.Int) *big.Int {
 }
 
 
+func ratIntPow(base *big.Rat, exponent *big.Int) sets.Number {
+	if exponent.Sign() < 0 {
+		return Inv(ratIntPow(base, Neg(exponent).(*big.Int)))
+	}
+
+	if exponent.Sign() == 0 {
+		return big.NewFloat(1)
+	}
+	if base.Sign() == 0 {
+		return big.NewFloat(0)
+	}
+	flag := big.NewInt(0)
+	total := big.NewRat(1, 1)
+	factor := base
+	for {
+		if exponent.Cmp(oneInt) == 0 {
+			return total
+		}
+		if flag.And(exponent, oneInt).Sign() > 0 {
+			total.Mul(total, factor)
+		}
+		factor.Mul(factor, factor)
+		exponent.Rsh(exponent, 1)
+	}
+	return total
+}
+
+
+func floatIntPow(base *big.Float, exponent *big.Int) sets.Number {
+	if exponent.Sign() < 0 {
+		return Inv(floatIntPow(base, Neg(exponent).(*big.Int)))
+	}
+
+	if exponent.Sign() == 0 {
+		return big.NewFloat(1)
+	}
+	if base.Sign() == 0 {
+		return big.NewFloat(0)
+	}
+	flag := big.NewInt(0)
+	total := big.NewFloat(1)
+	factor := base
+	for {
+		if exponent.Cmp(oneInt) == 0 {
+			return total
+		}
+		if flag.And(exponent, oneInt).Sign() > 0 {
+			total.Mul(total, factor)
+		}
+		factor.Mul(factor, factor)
+		exponent.Rsh(exponent, 1)
+	}
+	return total
+}
+
+
 func Pow(base, exponent sets.Number) sets.Number {
-	set := sets.BroaderAll(sets.ClosestAll(base, exponent)...)
-	cast := sets.UpCastTo(set, base, exponent)
-	base = cast[0]
-	exponent = cast[1]
+	//set := sets.BroaderAll(sets.ClosestAll(base, exponent)...)
+	//cast := sets.UpCastTo(set, base, exponent)
+	//base = cast[0]
+	//exponent = cast[1]
 	switch vb := base.(type) {
 	case *big.Int:
-		ve := exponent.(*big.Int)
-		abse := big.NewInt(0).Abs(ve)
-		signe := ve.Sign()
-		if signe == 0 && vb.Sign() == 0 {
-			panic("attempting to calculate integers 0 elevated to 0")
-		} else if signe == -1 {
-			return intPow(vb, abse)
-		} else if signe == 1 {
-			return big.NewRat(0, 1).SetFrac(big.NewInt(1), intPow(vb, abse))
+		switch ve := exponent.(type) {
+		case *big.Int:
+			return intPow(vb, ve)
+		case *big.Rat:
+			return bigfloat.Pow(big.NewFloat(0).SetInt(vb), big.NewFloat(0).SetRat(ve))
+		case *big.Float:
+			return bigfloat.Pow(big.NewFloat(0).SetInt(vb), ve)
 		}
 	case *big.Rat:
+		switch ve := exponent.(type) {
+		case *big.Int:
+			return ratIntPow(vb, ve)
+		case *big.Rat:
+			return bigfloat.Pow(big.NewFloat(0).SetRat(vb), big.NewFloat(0).SetRat(ve))
+		case *big.Float:
+			return bigfloat.Pow(big.NewFloat(0).SetRat(vb), ve)
+		}
 		return bigfloat.Pow(big.NewFloat(0).SetRat(vb), big.NewFloat(0).SetRat(exponent.(*big.Rat)))
 	case *big.Float:
-		return bigfloat.Pow(vb, exponent.(*big.Float))
+		switch ve := exponent.(type) {
+		case *big.Int:
+			return floatIntPow(vb, ve)
+		case *big.Rat:
+			return bigfloat.Pow(vb, big.NewFloat(0).SetRat(ve))
+		case *big.Float:
+			return bigfloat.Pow(vb, ve)
+		}
 	}
 	return nil
 }
