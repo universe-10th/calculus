@@ -187,21 +187,21 @@ func (exp ExpExpr) CollectVariables(variables Variables) {
 }
 
 
-func Pow(base, exponent Expression) PowExpr {
+func Pow(base, exponent Expression) Expression {
 	return PowExpr{base, exponent}
 }
 
 
-func Ln(power Expression) LnExpr {
+func Ln(power Expression) Expression {
 	return LnExpr{FunctionExpr{"ln"}, power}
 }
 
 
-func Log(base, power Expression) LogExpr {
+func Log(base, power Expression) Expression {
 	return LogExpr{FunctionExpr{"log"}, power, base}
 }
 
 
-func Exp(exponent Expression) ExpExpr {
+func Exp(exponent Expression) Expression {
 	return ExpExpr{FunctionExpr{"exp"}, exponent}
 }

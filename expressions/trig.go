@@ -91,16 +91,16 @@ func (tan TanExpr) Derivative(wrt Variable) (Expression, error) {
 }
 
 
-func Sin(arg Expression) SinExpr {
+func Sin(arg Expression) Expression {
 	return SinExpr{TrigFunctionExpr{FunctionExpr{"sin"},arg}}
 }
 
 
-func Cos(arg Expression) CosExpr {
+func Cos(arg Expression) Expression {
 	return CosExpr{TrigFunctionExpr{FunctionExpr{"cos"},arg}}
 }
 
 
-func Tan(arg Expression) TanExpr {
+func Tan(arg Expression) Expression {
 	return TanExpr{TrigFunctionExpr{FunctionExpr{"tan"},arg}}
 }
