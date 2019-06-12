@@ -6,10 +6,6 @@ import (
 )
 
 
-var oneInt = big.NewInt(1)
-var oneFloat = big.NewFloat(1)
-
-
 func Neg(a sets.Number) sets.Number {
 	switch va := a.(type) {
 	case *big.Int:
