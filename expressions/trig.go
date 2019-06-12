@@ -47,8 +47,11 @@ func (sin SinExpr) Evaluate(args Arguments) (sets.Number, error) {
 
 
 func (sin SinExpr) Derivative(wrt Variable) (Expression, error) {
-	// TODO
-	return nil, nil
+	if derivative, err := sin.arg.Derivative(wrt); err != nil {
+		return nil, err
+	} else {
+		return Mul(Cos(sin.arg), derivative), nil
+	}
 }
 
 
@@ -62,8 +65,11 @@ func (cos CosExpr) Evaluate(args Arguments) (sets.Number, error) {
 
 
 func (cos CosExpr) Derivative(wrt Variable) (Expression, error) {
-	// TODO
-	return nil, nil
+	if derivative, err := cos.arg.Derivative(wrt); err != nil {
+		return nil, err
+	} else {
+		return Mul(Negated(Sin(cos.arg)), derivative), nil
+	}
 }
 
 
@@ -89,8 +95,11 @@ func (tan TanExpr) Evaluate(args Arguments) (sets.Number, error) {
 
 
 func (tan TanExpr) Derivative(wrt Variable) (Expression, error) {
-	// TODO
-	return nil, nil
+	if derivative, err := tan.arg.Derivative(wrt); err != nil {
+		return nil, err
+	} else {
+		return Mul(Pow(Sin(tan.arg), Num(-2)), derivative), nil
+	}
 }
 
 
