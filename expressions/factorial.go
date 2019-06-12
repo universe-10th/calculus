@@ -63,3 +63,8 @@ func (factorial FactorialExpr) String() string {
 func (factorial FactorialExpr) IsSelfContained() bool {
 	return true
 }
+
+
+func Factorial(value Expression) Expression {
+	return FactorialExpr{value}
+}
