@@ -97,6 +97,7 @@ func (ln LnExpr) Evaluate(args Arguments) (sets.Number, error) {
 
 
 func (ln LnExpr) Derivative(wrt Variable) (Expression, error) {
+	// TODO
 	return nil, nil
 }
 
@@ -142,6 +143,7 @@ func (log LogExpr) Evaluate(args Arguments) (sets.Number, error) {
 
 
 func (log LogExpr) Derivative(wrt Variable) (Expression, error) {
+	// TODO
 	return nil, nil
 }
 
@@ -164,6 +166,7 @@ type ExpExpr struct {
 
 
 func (exp ExpExpr) Derivative(wrt Variable) (Expression, error) {
+	// TODO
 	return nil, nil
 }
 

@@ -47,6 +47,7 @@ func (sin SinExpr) Evaluate(args Arguments) (sets.Number, error) {
 
 
 func (sin SinExpr) Derivative(wrt Variable) (Expression, error) {
+	// TODO
 	return nil, nil
 }
 
@@ -61,6 +62,7 @@ func (cos CosExpr) Evaluate(args Arguments) (sets.Number, error) {
 
 
 func (cos CosExpr) Derivative(wrt Variable) (Expression, error) {
+	// TODO
 	return nil, nil
 }
 
@@ -87,6 +89,7 @@ func (tan TanExpr) Evaluate(args Arguments) (sets.Number, error) {
 
 
 func (tan TanExpr) Derivative(wrt Variable) (Expression, error) {
+	// TODO
 	return nil, nil
 }
 
