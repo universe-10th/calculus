@@ -97,8 +97,11 @@ func (ln LnExpr) Evaluate(args Arguments) (sets.Number, error) {
 
 
 func (ln LnExpr) Derivative(wrt Variable) (Expression, error) {
-	// TODO
-	return nil, nil
+	if derivative, err := ln.arg.Derivative(wrt); err != nil {
+		return nil, err
+	} else {
+		return Mul(Inverse(ln.arg), derivative), nil
+	}
 }
 
 
@@ -166,7 +169,11 @@ type ExpExpr struct {
 
 
 func (exp ExpExpr) Derivative(wrt Variable) (Expression, error) {
-	// TODO
+	if derivative, err := exp.exponent.Derivative(wrt); err != nil {
+		return nil, err
+	} else {
+		return Mul(Exp(exp.exponent), derivative), nil
+	}
 	return nil, nil
 }
 
