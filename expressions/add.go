@@ -11,7 +11,7 @@ type AddExpr struct {
 }
 
 
-func (add *AddExpr) Evaluate(args Arguments) (sets.Number, error) {
+func (add AddExpr) Evaluate(args Arguments) (sets.Number, error) {
 	terms := make([]sets.Number, len(add.terms))
 	for index, term := range add.terms {
 		if evaluated, err := term.Evaluate(args); err != nil {
@@ -24,7 +24,7 @@ func (add *AddExpr) Evaluate(args Arguments) (sets.Number, error) {
 }
 
 
-func (add *AddExpr) Derivative(wrt Variable) (Expression, error) {
+func (add AddExpr) Derivative(wrt Variable) (Expression, error) {
 	derivatedTerms := make([]Expression, len(add.terms))
 	for index, term := range add.terms {
 		if derivatedTerm, err := term.Derivative(wrt); err != nil {
@@ -37,14 +37,14 @@ func (add *AddExpr) Derivative(wrt Variable) (Expression, error) {
 }
 
 
-func (add *AddExpr) CollectVariables(variables Variables) {
+func (add AddExpr) CollectVariables(variables Variables) {
 	for _, term := range add.terms {
 		term.CollectVariables(variables)
 	}
 }
 
 
-func (add *AddExpr) String() string {
+func (add AddExpr) String() string {
 	// TODO
 	return ""
 }
@@ -53,7 +53,7 @@ func (add *AddExpr) String() string {
 func flattenTerms(terms []Expression) []Expression {
 	flattenedTerms := make([]Expression, 2)
 	for _, term := range terms {
-		if addExpr, ok := term.(*AddExpr); ok {
+		if addExpr, ok := term.(AddExpr); ok {
 			for _, term := range flattenTerms(addExpr.terms) {
 				flattenedTerms = append(flattenedTerms, term)
 			}
@@ -65,6 +65,6 @@ func flattenTerms(terms []Expression) []Expression {
 }
 
 
-func Add(terms ...Expression) *AddExpr {
-	return &AddExpr{flattenTerms(terms)}
+func Add(terms ...Expression) AddExpr {
+	return AddExpr{flattenTerms(terms)}
 }

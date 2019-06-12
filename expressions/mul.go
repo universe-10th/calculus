@@ -11,7 +11,7 @@ type MulExpr struct {
 }
 
 
-func (mul *MulExpr) Evaluate(args Arguments) (sets.Number, error) {
+func (mul MulExpr) Evaluate(args Arguments) (sets.Number, error) {
 	factors := make([]sets.Number, len(mul.factors))
 	for index, term := range mul.factors {
 		if evaluated, err := term.Evaluate(args); err != nil {
@@ -24,7 +24,7 @@ func (mul *MulExpr) Evaluate(args Arguments) (sets.Number, error) {
 }
 
 
-func (mul *MulExpr) Derivative(wrt Variable) (Expression, error) {
+func (mul MulExpr) Derivative(wrt Variable) (Expression, error) {
 	factors := make([]Expression, len(mul.factors))
 	for index, factor := range mul.factors {
 		factors[index] = factor
@@ -51,14 +51,14 @@ func (mul *MulExpr) Derivative(wrt Variable) (Expression, error) {
 }
 
 
-func (mul *MulExpr) CollectVariables(variables Variables) {
+func (mul MulExpr) CollectVariables(variables Variables) {
 	for _, term := range mul.factors {
 		term.CollectVariables(variables)
 	}
 }
 
 
-func (mul *MulExpr) String() string {
+func (mul MulExpr) String() string {
 	// TODO
 	return ""
 }
@@ -67,7 +67,7 @@ func (mul *MulExpr) String() string {
 func flattenFactors(factors []Expression) []Expression {
 	flattenedFactors := make([]Expression, 2)
 	for _, term := range factors {
-		if mulExpr, ok := term.(*MulExpr); ok {
+		if mulExpr, ok := term.(MulExpr); ok {
 			for _, term := range flattenFactors(mulExpr.factors) {
 				flattenedFactors = append(flattenedFactors, term)
 			}
@@ -79,6 +79,6 @@ func flattenFactors(factors []Expression) []Expression {
 }
 
 
-func Mul(terms ...Expression) *AddExpr {
-	return &AddExpr{flattenFactors(terms)}
+func Mul(factors ...Expression) MulExpr {
+	return MulExpr{flattenFactors(factors)}
 }

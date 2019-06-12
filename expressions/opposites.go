@@ -11,7 +11,7 @@ type NegatedExpr struct {
 }
 
 
-func (negated *NegatedExpr) Evaluate(args Arguments) (sets.Number, error) {
+func (negated NegatedExpr) Evaluate(args Arguments) (sets.Number, error) {
 	if result, err := negated.arg.Evaluate(args); err != nil {
 		return nil, err
 	} else {
@@ -20,7 +20,7 @@ func (negated *NegatedExpr) Evaluate(args Arguments) (sets.Number, error) {
 }
 
 
-func (negated *NegatedExpr) Derivative(wrt Variable) (Expression, error) {
+func (negated NegatedExpr) Derivative(wrt Variable) (Expression, error) {
 	if result, err := negated.arg.Derivative(wrt); err != nil {
 		return nil, err
 	} else {
@@ -29,14 +29,14 @@ func (negated *NegatedExpr) Derivative(wrt Variable) (Expression, error) {
 }
 
 
-func (negated *NegatedExpr) CollectVariables(variables Variables) {
+func (negated NegatedExpr) CollectVariables(variables Variables) {
 	negated.arg.CollectVariables(variables)
 }
 
 
-func (negated *NegatedExpr) String() string {
+func (negated NegatedExpr) String() string {
 	switch v := negated.arg.(type) {
-	case *AddExpr:
+	case AddExpr:
 		return fmt.Sprintf("-(%s)", v)
 	default:
 		return fmt.Sprintf("-%s", v)
@@ -44,6 +44,6 @@ func (negated *NegatedExpr) String() string {
 }
 
 
-func Negated(arg Expression) *NegatedExpr {
-	return &NegatedExpr{arg}
+func Negated(arg Expression) NegatedExpr {
+	return NegatedExpr{arg}
 }
