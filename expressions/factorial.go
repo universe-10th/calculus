@@ -36,6 +36,21 @@ func (factorial FactorialExpr) IsConstant() bool {
 }
 
 
+func (factorial FactorialExpr) Simplify() (Expression, error) {
+	if simplified, err := factorial.arg.Simplify(); err != nil {
+		return nil, err
+	} else if num, ok := simplified.(Constant); ok {
+		if result, err := factorial.wrappedFactorial(num.number); err != nil {
+			return nil, err
+		} else {
+			return Constant{result}, nil
+		}
+	} else {
+		return Factorial(simplified), nil
+	}
+}
+
+
 func (factorial FactorialExpr) wrappedFactorial(input sets.Number) (result sets.Number, err error) {
 	defer func(){
 		if r := recover(); r != nil {

@@ -54,6 +54,30 @@ func (add AddExpr) IsConstant() bool {
 }
 
 
+func (add AddExpr) Simplify() (Expression, error) {
+	simplifiedTerms := []sets.Number{}
+	nonSimplifiedTerms := []Expression{}
+
+	for _, term := range add.terms {
+		if simplified, err := term.Simplify(); err != nil {
+			return nil, err
+		} else if num, ok := simplified.(Constant); ok {
+			simplifiedTerms = append(simplifiedTerms, num.number)
+		} else {
+			nonSimplifiedTerms = append(nonSimplifiedTerms, num)
+		}
+	}
+
+	simplifiedSummary := ops.Add(simplifiedTerms...)
+	if len(nonSimplifiedTerms) != 0 {
+		nonSimplifiedTerms = append(nonSimplifiedTerms, Constant{simplifiedSummary})
+		return Add(nonSimplifiedTerms...), nil
+	} else {
+		return Constant{simplifiedSummary}, nil
+	}
+}
+
+
 func (add AddExpr) String() string {
 	// TODO
 	return ""

@@ -59,6 +59,29 @@ func (pow PowExpr) IsConstant() bool {
 }
 
 
+func (pow PowExpr) Simplify() (Expression, error) {
+	if simplifiedBase, err := pow.base.Simplify(); err != nil {
+		return nil, err
+	} else if simplifiedExponent, err := pow.exponent.Simplify(); err != nil {
+		return nil, err
+	} else {
+		// if both are constants, calculate.
+		// otherwise, make new expression.
+		simplifiedBaseNum, okBase := simplifiedBase.(Constant)
+		simplifiedExponentNum, okPower := simplifiedExponent.(Constant)
+		if okBase && okPower {
+			if result, err := pow.wrappedPow(simplifiedBaseNum.number, simplifiedExponentNum.number); err != nil {
+				return nil, err
+			} else {
+				return Constant{result}, nil
+			}
+		} else {
+			return Pow(simplifiedBase, simplifiedExponent), nil
+		}
+	}
+}
+
+
 func (pow PowExpr) String() string {
 	baseStr := pow.base.String()
 	if _, ok := pow.base.(SelfContained); !ok {
@@ -125,6 +148,21 @@ func (ln LnExpr) IsConstant() bool {
 }
 
 
+func (ln LnExpr) Simplify() (Expression, error) {
+	if simplified, err := ln.arg.Simplify(); err != nil {
+		return nil, err
+	} else if num, ok := simplified.(Constant); ok {
+		if result, err := ln.wrappedLn(num.number); err != nil {
+			return nil, err
+		} else {
+			return Constant{result}, nil
+		}
+	} else {
+		return Ln(simplified), nil
+	}
+}
+
+
 type LogExpr struct {
 	FunctionExpr
 	power   Expression
@@ -177,6 +215,29 @@ func (log LogExpr) IsConstant() bool {
 }
 
 
+func (log LogExpr) Simplify() (Expression, error) {
+	if simplifiedBase, err := log.base.Simplify(); err != nil {
+		return nil, err
+	} else if simplifiedPower, err := log.power.Simplify(); err != nil {
+		return nil, err
+	} else {
+		// if both are constants, calculate.
+		// otherwise, make new expression.
+		simplifiedBaseNum, okBase := simplifiedBase.(Constant)
+		simplifiedPowerNum, okPower := simplifiedPower.(Constant)
+		if okBase && okPower {
+			if result, err := log.wrappedLn(simplifiedPowerNum.number, simplifiedBaseNum.number); err != nil {
+				return nil, err
+			} else {
+				return Constant{result}, nil
+			}
+		} else {
+			return Log(simplifiedBase, simplifiedPower), nil
+		}
+	}
+}
+
+
 type ExpExpr struct {
 	FunctionExpr
 	exponent Expression
@@ -214,6 +275,17 @@ func (exp ExpExpr) CollectVariables(variables Variables) {
 
 func (exp ExpExpr) IsConstant() bool {
 	return exp.exponent.IsConstant()
+}
+
+
+func (exp ExpExpr) Simplify() (Expression, error) {
+	if simplified, err := exp.exponent.Simplify(); err != nil {
+		return nil, err
+	} else if num, ok := simplified.(Constant); ok {
+		return Constant{ops.Exp(num.number)}, nil
+	} else {
+		return Exp(simplified), nil
+	}
 }
 
 

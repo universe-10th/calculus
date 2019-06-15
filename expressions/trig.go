@@ -42,6 +42,17 @@ type TanExpr struct {
 }
 
 
+func (sin SinExpr) Simplify() (Expression, error) {
+	if simplified, err := sin.arg.Simplify(); err != nil {
+		return nil, err
+	} else if num, ok := simplified.(Constant); ok {
+		return Constant{ops.Sin(num.number)}, nil
+	} else {
+		return Sin(simplified), nil
+	}
+}
+
+
 func (sin SinExpr) Evaluate(args Arguments) (sets.Number, error) {
 	if result, err := sin.arg.Evaluate(args); err != nil {
 		return ops.Sin(result), nil
@@ -56,6 +67,17 @@ func (sin SinExpr) Derivative(wrt Variable) (Expression, error) {
 		return nil, err
 	} else {
 		return Mul(Cos(sin.arg), derivative), nil
+	}
+}
+
+
+func (cos CosExpr) Simplify() (Expression, error) {
+	if simplified, err := cos.arg.Simplify(); err != nil {
+		return nil, err
+	} else if num, ok := simplified.(Constant); ok {
+		return Constant{ops.Cos(num.number)}, nil
+	} else {
+		return Cos(simplified), nil
 	}
 }
 
@@ -87,6 +109,21 @@ func (tan TanExpr) wrappedTan(input sets.Number) (result sets.Number, err error)
 	}()
 	result = ops.Tan(input)
 	return
+}
+
+
+func (tan TanExpr) Simplify() (Expression, error) {
+	if simplified, err := tan.arg.Simplify(); err != nil {
+		return nil, err
+	} else if num, ok := simplified.(Constant); ok {
+		if result, err := tan.wrappedTan(num.number); err != nil {
+			return nil, err
+		} else {
+			return Constant{result}, nil
+		}
+	} else {
+		return Tan(simplified), nil
+	}
 }
 
 

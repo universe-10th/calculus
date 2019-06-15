@@ -68,6 +68,30 @@ func (mul MulExpr) IsConstant() bool {
 }
 
 
+func (mul MulExpr) Simplify() (Expression, error) {
+	simplifiedTerms := []sets.Number{}
+	nonSimplifiedTerms := []Expression{}
+
+	for _, factor := range mul.factors {
+		if simplified, err := factor.Simplify(); err != nil {
+			return nil, err
+		} else if num, ok := simplified.(Constant); ok {
+			simplifiedTerms = append(simplifiedTerms, num.number)
+		} else {
+			nonSimplifiedTerms = append(nonSimplifiedTerms, num)
+		}
+	}
+
+	simplifiedSummary := ops.Mul(simplifiedTerms...)
+	if len(nonSimplifiedTerms) != 0 {
+		nonSimplifiedTerms = append(nonSimplifiedTerms, Constant{simplifiedSummary})
+		return Add(nonSimplifiedTerms...), nil
+	} else {
+		return Constant{simplifiedSummary}, nil
+	}
+}
+
+
 func (mul MulExpr) String() string {
 	// TODO
 	return ""

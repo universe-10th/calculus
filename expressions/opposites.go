@@ -4,6 +4,7 @@ import (
 	"github.com/universe-10th-calculus/sets"
 	"github.com/universe-10th-calculus/ops"
 	"fmt"
+	"github.com/universe-10th-calculus/errors"
 )
 
 type NegatedExpr struct {
@@ -36,6 +37,17 @@ func (negated NegatedExpr) CollectVariables(variables Variables) {
 
 func (negated NegatedExpr) IsConstant() bool {
 	return negated.arg.IsConstant()
+}
+
+
+func (negated NegatedExpr) Simplify() (Expression, error) {
+	if simplified, err := negated.arg.Simplify(); err != nil {
+		return nil, err
+	} else if num, ok := simplified.(Constant); ok {
+		return Constant{ops.Neg(num.number)}, nil
+	} else {
+		return Negated(simplified), nil
+	}
 }
 
 
@@ -95,6 +107,35 @@ func (inverse InverseExpr) CollectVariables(variables Variables) {
 
 func (inverse InverseExpr) IsConstant() bool {
 	return inverse.arg.IsConstant()
+}
+
+
+func (inverse InverseExpr) wrappedInverse(value sets.Number) (result sets.Number, err error) {
+	defer func(){
+		if r := recover(); r != nil {
+			result = nil
+			err = errors.DivisionByZero
+		}
+	}()
+	result = ops.Inv(value)
+	return
+}
+
+
+func (inverse InverseExpr) Simplify() (Expression, error) {
+	if simplified, err := inverse.arg.Simplify(); err != nil {
+		return nil, err
+	} else {
+		if num, ok := simplified.(Constant); ok {
+			if result, err := inverse.wrappedInverse(num.number); err != nil {
+				return nil, err
+			} else {
+				return Constant{result}, nil
+			}
+		} else {
+			return Inverse(simplified), nil
+		}
+	}
 }
 
 

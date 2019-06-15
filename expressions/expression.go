@@ -31,6 +31,7 @@ type Expression interface {
 	Evaluate(arguments Arguments) (sets.Number, error)
 	Derivative(wrt Variable) (Expression, error)
 	IsConstant() bool
+	Simplify() (Expression, error)
 	fmt.Stringer
 }
 
@@ -48,6 +49,11 @@ func (variable Variable) CollectVariables(variables Variables) {
 
 func (variable Variable) IsConstant() bool {
 	return false
+}
+
+
+func (variable Variable) Simplify() (Expression, error) {
+	return variable, nil
 }
 
 
@@ -86,6 +92,11 @@ func (constant Constant) CollectVariables(Variables) {
 
 func (constant Constant) IsConstant() bool {
 	return true
+}
+
+
+func (constant Constant) Simplify() (Expression, error) {
+	return constant, nil
 }
 
 
