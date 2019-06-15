@@ -22,6 +22,11 @@ func (trig TrigFunctionExpr) CollectVariables(variables Variables) {
 }
 
 
+func (trig TrigFunctionExpr) IsConstant() bool {
+	return trig.arg.IsConstant()
+}
+
+
 type SinExpr struct {
 	TrigFunctionExpr
 }

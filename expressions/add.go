@@ -44,6 +44,16 @@ func (add AddExpr) CollectVariables(variables Variables) {
 }
 
 
+func (add AddExpr) IsConstant() bool {
+	for _, term := range add.terms {
+		if !term.IsConstant() {
+			return false
+		}
+	}
+	return true
+}
+
+
 func (add AddExpr) String() string {
 	// TODO
 	return ""

@@ -54,6 +54,11 @@ func (pow PowExpr) CollectVariables(variables Variables) {
 }
 
 
+func (pow PowExpr) IsConstant() bool {
+	return pow.base.IsConstant() && pow.exponent.IsConstant()
+}
+
+
 func (pow PowExpr) String() string {
 	baseStr := pow.base.String()
 	if _, ok := pow.base.(SelfContained); !ok {
@@ -115,6 +120,11 @@ func (ln LnExpr) CollectVariables(variables Variables) {
 }
 
 
+func (ln LnExpr) IsConstant() bool {
+	return ln.arg.IsConstant()
+}
+
+
 type LogExpr struct {
 	FunctionExpr
 	power   Expression
@@ -162,6 +172,11 @@ func (log LogExpr) CollectVariables(variables Variables) {
 }
 
 
+func (log LogExpr) IsConstant() bool {
+	return log.base.IsConstant() && log.power.IsConstant()
+}
+
+
 type ExpExpr struct {
 	FunctionExpr
 	exponent Expression
@@ -194,6 +209,11 @@ func (exp ExpExpr) Arguments() []Expression {
 
 func (exp ExpExpr) CollectVariables(variables Variables) {
 	 exp.exponent.CollectVariables(variables)
+}
+
+
+func (exp ExpExpr) IsConstant() bool {
+	return exp.exponent.IsConstant()
 }
 
 

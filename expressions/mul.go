@@ -58,6 +58,16 @@ func (mul MulExpr) CollectVariables(variables Variables) {
 }
 
 
+func (mul MulExpr) IsConstant() bool {
+	for _, factor := range mul.factors {
+		if !factor.IsConstant() {
+			return false
+		}
+	}
+	return true
+}
+
+
 func (mul MulExpr) String() string {
 	// TODO
 	return ""

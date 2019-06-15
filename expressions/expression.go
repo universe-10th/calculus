@@ -30,6 +30,7 @@ type Expression interface {
 	CollectVariables(Variables)
 	Evaluate(arguments Arguments) (sets.Number, error)
 	Derivative(wrt Variable) (Expression, error)
+	IsConstant() bool
 	fmt.Stringer
 }
 
@@ -42,6 +43,11 @@ type SelfContained interface {
 
 func (variable Variable) CollectVariables(variables Variables) {
 	variables[variable] = true
+}
+
+
+func (variable Variable) IsConstant() bool {
+	return false
 }
 
 
@@ -75,6 +81,11 @@ func (variable Variable) IsSelfContained() bool {
 
 func (constant Constant) CollectVariables(Variables) {
 	// Does nothing
+}
+
+
+func (constant Constant) IsConstant() bool {
+	return true
 }
 
 

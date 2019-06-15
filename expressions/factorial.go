@@ -31,6 +31,11 @@ func (factorial FactorialExpr) CollectVariables(variables Variables) {
 }
 
 
+func (factorial FactorialExpr) IsConstant() bool {
+	return factorial.arg.IsConstant()
+}
+
+
 func (factorial FactorialExpr) wrappedFactorial(input sets.Number) (result sets.Number, err error) {
 	defer func(){
 		if r := recover(); r != nil {

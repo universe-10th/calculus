@@ -34,6 +34,11 @@ func (negated NegatedExpr) CollectVariables(variables Variables) {
 }
 
 
+func (negated NegatedExpr) IsConstant() bool {
+	return negated.arg.IsConstant()
+}
+
+
 func (negated NegatedExpr) String() string {
 	switch v := negated.arg.(type) {
 	case AddExpr:
@@ -85,6 +90,11 @@ func (inverse InverseExpr) Derivative(wrt Variable) (Expression, error) {
 
 func (inverse InverseExpr) CollectVariables(variables Variables) {
 	inverse.arg.CollectVariables(variables)
+}
+
+
+func (inverse InverseExpr) IsConstant() bool {
+	return inverse.arg.IsConstant()
 }
 
 
