@@ -111,7 +111,15 @@ func (constant Constant) Derivative(wrt Variable) (Expression, error) {
 
 
 func (constant Constant) String() string {
-	return fmt.Sprintf("%s", constant.number)
+	switch c := constant.number.(type) {
+	case *big.Float:
+		return c.Text('f', -1)
+	case *big.Int:
+		return fmt.Sprintf("%d", c)
+	case *big.Rat:
+		return fmt.Sprintf("%s", c)
+	}
+	return "<?>"
 }
 
 
