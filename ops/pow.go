@@ -21,10 +21,10 @@ func intPow(base, exponent *big.Int) sets.Number {
 	}
 	one := big.NewInt(1)
 	flag := big.NewInt(0)
-	total := one
+	total := big.NewInt(1)
 	factor := base
 	for {
-		if exponent.Cmp(one) == 0 {
+		if exponent.Cmp(zeroInt) == 0 {
 			return total
 		}
 		if flag.And(exponent, one).Sign() > 0 {
@@ -33,7 +33,6 @@ func intPow(base, exponent *big.Int) sets.Number {
 		factor.Mul(factor, factor)
 		exponent.Rsh(exponent, 1)
 	}
-	return total
 }
 
 
@@ -52,7 +51,7 @@ func ratIntPow(base *big.Rat, exponent *big.Int) sets.Number {
 	total := big.NewRat(1, 1)
 	factor := base
 	for {
-		if exponent.Cmp(oneInt) == 0 {
+		if exponent.Cmp(zeroInt) == 0 {
 			return total
 		}
 		if flag.And(exponent, oneInt).Sign() > 0 {
@@ -61,7 +60,6 @@ func ratIntPow(base *big.Rat, exponent *big.Int) sets.Number {
 		factor.Mul(factor, factor)
 		exponent.Rsh(exponent, 1)
 	}
-	return total
 }
 
 
@@ -80,7 +78,7 @@ func floatIntPow(base *big.Float, exponent *big.Int) sets.Number {
 	total := big.NewFloat(1)
 	factor := base
 	for {
-		if exponent.Cmp(oneInt) == 0 {
+		if exponent.Cmp(zeroInt) == 0 {
 			return total
 		}
 		if flag.And(exponent, oneInt).Sign() > 0 {
@@ -89,7 +87,6 @@ func floatIntPow(base *big.Float, exponent *big.Int) sets.Number {
 		factor.Mul(factor, factor)
 		exponent.Rsh(exponent, 1)
 	}
-	return total
 }
 
 
@@ -102,7 +99,7 @@ func Pow(base, exponent sets.Number) sets.Number {
 	case *big.Int:
 		switch ve := exponent.(type) {
 		case *big.Int:
-			return intPow(vb, ve)
+			return intPow(big.NewInt(0).Set(vb), big.NewInt(0).Set(ve))
 		case *big.Rat:
 			return bigfloat.Pow(big.NewFloat(0).SetInt(vb), big.NewFloat(0).SetRat(ve))
 		case *big.Float:
@@ -111,7 +108,7 @@ func Pow(base, exponent sets.Number) sets.Number {
 	case *big.Rat:
 		switch ve := exponent.(type) {
 		case *big.Int:
-			return ratIntPow(vb, ve)
+			return ratIntPow(big.NewRat(0, 1).Set(vb), big.NewInt(0).Set(ve))
 		case *big.Rat:
 			return bigfloat.Pow(big.NewFloat(0).SetRat(vb), big.NewFloat(0).SetRat(ve))
 		case *big.Float:
@@ -121,7 +118,7 @@ func Pow(base, exponent sets.Number) sets.Number {
 	case *big.Float:
 		switch ve := exponent.(type) {
 		case *big.Int:
-			return floatIntPow(vb, ve)
+			return floatIntPow(big.NewFloat(0).Set(vb), big.NewInt(0).Set(ve))
 		case *big.Rat:
 			return bigfloat.Pow(vb, big.NewFloat(0).SetRat(ve))
 		case *big.Float:
