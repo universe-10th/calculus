@@ -3,6 +3,7 @@ package expressions
 import (
 	"github.com/universe-10th-calculus/sets"
 	"github.com/universe-10th-calculus/ops"
+	"strings"
 )
 
 
@@ -79,8 +80,34 @@ func (add AddExpr) Simplify() (Expression, error) {
 
 
 func (add AddExpr) String() string {
-	// TODO
-	return ""
+	builder := strings.Builder{}
+	if len(add.terms) == 0 {
+		return ""
+	} else {
+		builder.WriteString(add.terms[0].String())
+	}
+
+	for _, expression := range add.terms[1:] {
+		// Unary operators: -E will be - V or - (Add) or - Expression
+		switch v := expression.(type) {
+		case NegatedExpr:
+			inner := v.arg
+			builder.WriteString(" - ")
+			switch inner.(type) {
+			case AddExpr:
+				builder.WriteString("(")
+				builder.WriteString(inner.String())
+				builder.WriteString(")")
+			default:
+				builder.WriteString(inner.String())
+			}
+		default:
+			builder.WriteString(" + ")
+			builder.WriteString(expression.String())
+		}
+	}
+
+	return builder.String()
 }
 
 
