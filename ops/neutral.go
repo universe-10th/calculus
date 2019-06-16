@@ -30,3 +30,31 @@ func One(set sets.Set) sets.Number {
 	}
 	return nil
 }
+
+
+func IsZero(value sets.Number) bool {
+	switch c := value.(type) {
+	case *big.Float:
+		return c.Cmp(big.NewFloat(0)) == 0
+	case *big.Rat:
+		return c.Cmp(big.NewRat(0, 1)) == 0
+	case *big.Int:
+		return c.Cmp(big.NewInt(0)) == 0
+	default:
+		panic("cannot ask for zero a non-*big.(Int, Float, Rat) value")
+	}
+}
+
+
+func IsOne(value sets.Number) bool {
+	switch c := value.(type) {
+	case *big.Float:
+		return c.Cmp(big.NewFloat(1)) == 0
+	case *big.Rat:
+		return c.Cmp(big.NewRat(1, 1)) == 0
+	case *big.Int:
+		return c.Cmp(big.NewInt(1)) == 0
+	default:
+		panic("cannot ask for one a non-*big.(Int, Float, Rat) value")
+	}
+}
