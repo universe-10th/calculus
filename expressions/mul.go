@@ -3,6 +3,7 @@ package expressions
 import (
 	"github.com/universe-10th-calculus/sets"
 	"github.com/universe-10th-calculus/ops"
+	"strings"
 )
 
 
@@ -93,8 +94,50 @@ func (mul MulExpr) Simplify() (Expression, error) {
 
 
 func (mul MulExpr) String() string {
-	// TODO
-	return ""
+	builder := strings.Builder{}
+	if len(mul.factors) == 0 {
+		return ""
+	} else {
+		// Since addition has the lowest precedence,
+		// it must be wrapped
+		expression := mul.factors[0]
+		switch expression.(type) {
+		case AddExpr:
+			builder.WriteString("(")
+			builder.WriteString(expression.String())
+			builder.WriteString(")")
+		default:
+			builder.WriteString(expression.String())
+		}
+	}
+
+	for _, expression := range mul.factors[1:] {
+		// Inv operator will be added: / (E) for inner mul or addition, / E for any other inner.
+		// Add operation will be added: * (E)
+		// Other operators: * E
+		switch v := expression.(type) {
+		case InverseExpr:
+			inner := v.arg
+			builder.WriteString(" / ")
+			switch inner.(type) {
+			case MulExpr, AddExpr:
+				builder.WriteString("(")
+				builder.WriteString(inner.String())
+				builder.WriteString(")")
+			default:
+				builder.WriteString(inner.String())
+			}
+		case AddExpr:
+			builder.WriteString(" * (")
+			builder.WriteString(expression.String())
+			builder.WriteString(")")
+		default:
+			builder.WriteString(" * ")
+			builder.WriteString(expression.String())
+		}
+	}
+
+	return builder.String()
 }
 
 
