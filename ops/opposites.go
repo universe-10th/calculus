@@ -29,6 +29,6 @@ func Inv(a sets.Number) sets.Number {
 	case *big.Float:
 		return big.NewFloat(0).Quo(oneFloat, va)
 	default:
-		panic("cannot negate a non-*big.(Int, Float, Rat) value")
+		panic("cannot invert a non-*big.(Int, Float, Rat) value")
 	}
 }

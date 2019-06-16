@@ -29,10 +29,10 @@ func (mul MulExpr) Derivative(wrt Variable) (Expression, error) {
 	for index, factor := range mul.factors {
 		factors[index] = factor
 	}
-	derivatedFactors := make([]Expression, len(mul.factors))
+	derivedFactors := make([]Expression, len(mul.factors))
 	for index, factor := range factors {
-		if derivatedFactor, err := factor.Derivative(wrt); err != nil {
-			derivatedFactors[index] = derivatedFactor
+		if derivedFactor, err := factor.Derivative(wrt); err != nil {
+			derivedFactors[index] = derivedFactor
 		}
 	}
 	terms := make([]Expression, len(mul.factors))
@@ -40,7 +40,7 @@ func (mul MulExpr) Derivative(wrt Variable) (Expression, error) {
 		termFactors := make([]Expression, len(mul.factors))
 		for index2 := range terms {
 			if index == index2 {
-				termFactors[index2] = derivatedFactors[index2]
+				termFactors[index2] = derivedFactors[index2]
 			} else {
 				termFactors[index2] = factors[index2]
 			}

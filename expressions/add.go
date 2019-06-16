@@ -25,15 +25,15 @@ func (add AddExpr) Evaluate(args Arguments) (sets.Number, error) {
 
 
 func (add AddExpr) Derivative(wrt Variable) (Expression, error) {
-	derivatedTerms := make([]Expression, len(add.terms))
+	derivedTerms := make([]Expression, len(add.terms))
 	for index, term := range add.terms {
 		if derivatedTerm, err := term.Derivative(wrt); err != nil {
 			return nil, err
 		} else {
-			derivatedTerms[index] = derivatedTerm
+			derivedTerms[index] = derivatedTerm
 		}
 	}
-	return Add(derivatedTerms...), nil
+	return Add(derivedTerms...), nil
 }
 
 
