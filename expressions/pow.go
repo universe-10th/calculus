@@ -38,13 +38,20 @@ func (pow PowExpr) Evaluate(args Arguments) (sets.Number, error) {
 
 
 func (pow PowExpr) Derivative(wrt Variable) (Expression, error) {
-	// TODO
 	// Say we have f(x), g(x)
 	// d[f(x)^g(x)]/dx = f(x)^(g(x)-1) * [g(x)*df(x)/dx + f(x)*ln(f(x))*dg(x)/dx]
-	// TODO please note: we could use CollectVariables to tell whether
-	// TODO wrt is included in either the base or exponent expressions and
-	// TODO generate the special cases like f(x)^n, or a^f(x).
-	return nil, nil
+	var err error
+	var baseDerivative Expression
+	var exponentDerivative Expression
+	if baseDerivative, err = pow.base.Derivative(wrt); err != nil {
+		return nil, err
+	}
+	if exponentDerivative, err = pow.exponent.Derivative(wrt); err != nil {
+		return nil, err
+	}
+	first := Pow(pow.base, Add(pow.exponent, Num(-1)))
+	second := Add(Mul(pow.exponent, baseDerivative), Mul(pow.base, Ln(pow.base), exponentDerivative))
+	return Mul(first, second).Simplify()
 }
 
 
@@ -194,8 +201,7 @@ func (log LogExpr) Evaluate(args Arguments) (sets.Number, error) {
 
 
 func (log LogExpr) Derivative(wrt Variable) (Expression, error) {
-	// TODO
-	return nil, nil
+	return Mul(Ln(log.power), Inverse(Ln(log.base))).Derivative(wrt)
 }
 
 
@@ -250,7 +256,6 @@ func (exp ExpExpr) Derivative(wrt Variable) (Expression, error) {
 	} else {
 		return Mul(Exp(exp.exponent), derivative).Simplify()
 	}
-	return nil, nil
 }
 
 
