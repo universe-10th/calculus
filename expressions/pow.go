@@ -170,6 +170,11 @@ func (ln LnExpr) Simplify() (Expression, error) {
 }
 
 
+func (ln LnExpr) String() string {
+	return FunctionDisplay(ln)
+}
+
+
 type LogExpr struct {
 	FunctionExpr
 	power   Expression
@@ -244,6 +249,11 @@ func (log LogExpr) Simplify() (Expression, error) {
 }
 
 
+func (log LogExpr) String() string {
+	return FunctionDisplay(log)
+}
+
+
 type ExpExpr struct {
 	FunctionExpr
 	exponent Expression
@@ -291,6 +301,11 @@ func (exp ExpExpr) Simplify() (Expression, error) {
 	} else {
 		return Exp(simplified), nil
 	}
+}
+
+
+func (exp ExpExpr) String() string {
+	return FunctionDisplay(exp)
 }
 
 

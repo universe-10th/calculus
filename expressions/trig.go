@@ -12,6 +12,11 @@ type TrigFunctionExpr struct {
 }
 
 
+func (trigFunctionExpr TrigFunctionExpr) String() string {
+	return FunctionDisplay(trigFunctionExpr)
+}
+
+
 func (trig TrigFunctionExpr) Arguments() []Expression {
 	return []Expression{ trig.arg }
 }

@@ -33,7 +33,7 @@ func (function FunctionExpr) Arguments() []Expression {
 }
 
 
-func (function FunctionExpr) String() string {
+func FunctionDisplay(function Function) string {
 	arguments := function.Arguments()
 	placeholders := make([]string, len(arguments))
 	for index := range placeholders {
