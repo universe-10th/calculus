@@ -128,7 +128,7 @@ func (ln LnExpr) Derivative(wrt Variable) (Expression, error) {
 	if derivative, err := ln.arg.Derivative(wrt); err != nil {
 		return nil, err
 	} else {
-		return Mul(Inverse(ln.arg), derivative), nil
+		return Mul(Inverse(ln.arg), derivative).Simplify()
 	}
 }
 
@@ -248,7 +248,7 @@ func (exp ExpExpr) Derivative(wrt Variable) (Expression, error) {
 	if derivative, err := exp.exponent.Derivative(wrt); err != nil {
 		return nil, err
 	} else {
-		return Mul(Exp(exp.exponent), derivative), nil
+		return Mul(Exp(exp.exponent), derivative).Simplify()
 	}
 	return nil, nil
 }

@@ -66,7 +66,7 @@ func (sin SinExpr) Derivative(wrt Variable) (Expression, error) {
 	if derivative, err := sin.arg.Derivative(wrt); err != nil {
 		return nil, err
 	} else {
-		return Mul(Cos(sin.arg), derivative), nil
+		return Mul(Cos(sin.arg), derivative).Simplify()
 	}
 }
 
@@ -95,7 +95,7 @@ func (cos CosExpr) Derivative(wrt Variable) (Expression, error) {
 	if derivative, err := cos.arg.Derivative(wrt); err != nil {
 		return nil, err
 	} else {
-		return Mul(Negated(Sin(cos.arg)), derivative), nil
+		return Mul(Negated(Sin(cos.arg)), derivative).Simplify()
 	}
 }
 
@@ -140,7 +140,7 @@ func (tan TanExpr) Derivative(wrt Variable) (Expression, error) {
 	if derivative, err := tan.arg.Derivative(wrt); err != nil {
 		return nil, err
 	} else {
-		return Mul(Pow(Sin(tan.arg), Num(-2)), derivative), nil
+		return Mul(Pow(Sin(tan.arg), Num(-2)), derivative).Simplify()
 	}
 }
 

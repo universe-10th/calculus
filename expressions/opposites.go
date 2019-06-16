@@ -25,7 +25,7 @@ func (negated NegatedExpr) Derivative(wrt Variable) (Expression, error) {
 	if result, err := negated.arg.Derivative(wrt); err != nil {
 		return nil, err
 	} else {
-		return Negated(result), nil
+		return Negated(result).Simplify()
 	}
 }
 
@@ -93,10 +93,9 @@ func (inverse InverseExpr) Derivative(wrt Variable) (Expression, error) {
 		if _, ok := variables[wrt]; !ok {
 			return Num(0), nil
 		} else {
-			return Negated(Mul(derivative, Pow(inverse.arg, Num(-2)))), nil
+			return Negated(Mul(derivative, Pow(inverse.arg, Num(-2)))).Simplify()
 		}
 	}
-	return nil, nil
 }
 
 
