@@ -142,14 +142,14 @@ func (mul MulExpr) String() string {
 
 
 func flattenFactors(factors []Expression) []Expression {
-	flattenedFactors := make([]Expression, 2)
-	for _, term := range factors {
-		if mulExpr, ok := term.(MulExpr); ok {
+	flattenedFactors := make([]Expression, 0)
+	for _, factor := range factors {
+		if mulExpr, ok := factor.(MulExpr); ok {
 			for _, term := range flattenFactors(mulExpr.factors) {
 				flattenedFactors = append(flattenedFactors, term)
 			}
 		} else {
-			flattenedFactors = append(flattenedFactors, term)
+			flattenedFactors = append(flattenedFactors, factor)
 		}
 	}
 	return flattenedFactors

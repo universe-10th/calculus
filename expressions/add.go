@@ -112,7 +112,7 @@ func (add AddExpr) String() string {
 
 
 func flattenTerms(terms []Expression) []Expression {
-	flattenedTerms := make([]Expression, 2)
+	flattenedTerms := make([]Expression, 0)
 	for _, term := range terms {
 		if addExpr, ok := term.(AddExpr); ok {
 			for _, term := range flattenTerms(addExpr.terms) {
