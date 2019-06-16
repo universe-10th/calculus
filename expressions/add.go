@@ -71,7 +71,7 @@ func (add AddExpr) Simplify() (Expression, error) {
 
 	simplifiedSummary := ops.Add(simplifiedTerms...)
 	if len(nonSimplifiedTerms) != 0 {
-		if simplifiedSummary != nil {
+		if simplifiedSummary != nil && !ops.IsZero(simplifiedSummary) {
 			nonSimplifiedTerms = append(nonSimplifiedTerms, Constant{simplifiedSummary})
 		}
 		return Add(nonSimplifiedTerms...), nil

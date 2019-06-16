@@ -86,11 +86,15 @@ func (mul MulExpr) Simplify() (Expression, error) {
 	}
 
 	simplifiedSummary := ops.Mul(simplifiedTerms...)
+	if simplifiedSummary != nil && ops.IsZero(simplifiedSummary) {
+		return Num(0), nil
+	}
+
 	if len(nonSimplifiedTerms) != 0 {
-		if simplifiedSummary != nil {
+		if simplifiedSummary != nil && !ops.IsOne(simplifiedSummary) {
 			nonSimplifiedTerms = append(nonSimplifiedTerms, Constant{simplifiedSummary})
 		}
-		return Add(nonSimplifiedTerms...), nil
+		return Mul(nonSimplifiedTerms...), nil
 	} else {
 		if simplifiedSummary != nil {
 			return Constant{simplifiedSummary}, nil
