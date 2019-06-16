@@ -28,10 +28,10 @@ func (add AddExpr) Evaluate(args Arguments) (sets.Number, error) {
 func (add AddExpr) Derivative(wrt Variable) (Expression, error) {
 	derivedTerms := make([]Expression, len(add.terms))
 	for index, term := range add.terms {
-		if derivatedTerm, err := term.Derivative(wrt); err != nil {
+		if derivedTerm, err := term.Derivative(wrt); err != nil {
 			return nil, err
 		} else {
-			derivedTerms[index] = derivatedTerm
+			derivedTerms[index] = derivedTerm
 		}
 	}
 	return Add(derivedTerms...).Simplify()
