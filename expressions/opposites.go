@@ -147,6 +147,8 @@ func (inverse InverseExpr) String() string {
 func Inverse(arg Expression) Expression {
 	if inv, ok := arg.(InverseExpr); ok {
 		return inv.arg
+	} else if neg, ok := arg.(NegatedExpr); ok {
+		return NegatedExpr{InverseExpr{neg.arg}}
 	} else {
 		return InverseExpr{arg}
 	}
