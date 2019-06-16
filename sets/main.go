@@ -41,6 +41,8 @@ func setForUInt(value uint) Set {
 
 func Wrap(value interface{}) (Number, Set) {
 	switch c := value.(type) {
+	case int:
+		return big.NewInt(int64(c)), Z
 	case int64:
 		return big.NewInt(c), Z
 	case int32:
