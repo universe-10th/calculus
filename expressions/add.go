@@ -65,16 +65,22 @@ func (add AddExpr) Simplify() (Expression, error) {
 		} else if num, ok := simplified.(Constant); ok {
 			simplifiedTerms = append(simplifiedTerms, num.number)
 		} else {
-			nonSimplifiedTerms = append(nonSimplifiedTerms, num)
+			nonSimplifiedTerms = append(nonSimplifiedTerms, simplified)
 		}
 	}
 
 	simplifiedSummary := ops.Add(simplifiedTerms...)
 	if len(nonSimplifiedTerms) != 0 {
-		nonSimplifiedTerms = append(nonSimplifiedTerms, Constant{simplifiedSummary})
+		if simplifiedSummary != nil {
+			nonSimplifiedTerms = append(nonSimplifiedTerms, Constant{simplifiedSummary})
+		}
 		return Add(nonSimplifiedTerms...), nil
 	} else {
-		return Constant{simplifiedSummary}, nil
+		if simplifiedSummary != nil {
+			return Constant{simplifiedSummary}, nil
+		} else {
+			return Constant{ops.Zero(sets.N0)}, nil
+		}
 	}
 }
 

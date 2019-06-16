@@ -19,7 +19,7 @@ func inc(a, b sets.Number) {
 
 
 func Add(terms ...sets.Number) sets.Number {
-	if terms == nil {
+	if len(terms) == 0 {
 		return nil
 	} else if len(terms) == 1 {
 		return terms[0]

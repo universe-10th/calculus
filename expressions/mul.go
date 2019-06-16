@@ -32,14 +32,16 @@ func (mul MulExpr) Derivative(wrt Variable) (Expression, error) {
 	}
 	derivedFactors := make([]Expression, len(mul.factors))
 	for index, factor := range factors {
-		if derivedFactor, err := factor.Derivative(wrt); err != nil {
+		if derivedFactor, err := factor.Derivative(wrt); err == nil {
 			derivedFactors[index] = derivedFactor
+		} else {
+			return nil, err
 		}
 	}
 	terms := make([]Expression, len(mul.factors))
-	for index := range terms {
+	for index := range mul.factors {
 		termFactors := make([]Expression, len(mul.factors))
-		for index2 := range terms {
+		for index2 := range mul.factors {
 			if index == index2 {
 				termFactors[index2] = derivedFactors[index2]
 			} else {
@@ -79,16 +81,22 @@ func (mul MulExpr) Simplify() (Expression, error) {
 		} else if num, ok := simplified.(Constant); ok {
 			simplifiedTerms = append(simplifiedTerms, num.number)
 		} else {
-			nonSimplifiedTerms = append(nonSimplifiedTerms, num)
+			nonSimplifiedTerms = append(nonSimplifiedTerms, simplified)
 		}
 	}
 
 	simplifiedSummary := ops.Mul(simplifiedTerms...)
 	if len(nonSimplifiedTerms) != 0 {
-		nonSimplifiedTerms = append(nonSimplifiedTerms, Constant{simplifiedSummary})
+		if simplifiedSummary != nil {
+			nonSimplifiedTerms = append(nonSimplifiedTerms, Constant{simplifiedSummary})
+		}
 		return Add(nonSimplifiedTerms...), nil
 	} else {
-		return Constant{simplifiedSummary}, nil
+		if simplifiedSummary != nil {
+			return Constant{simplifiedSummary}, nil
+		} else {
+			return Constant{ops.One(sets.N0)}, nil
+		}
 	}
 }
 

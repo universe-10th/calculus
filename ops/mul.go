@@ -29,7 +29,7 @@ func mul(a, b, zero sets.Number) bool {
 
 
 func Mul(factors ...sets.Number) sets.Number {
-	if factors == nil {
+	if len(factors) == 0 {
 		return nil
 	} else if len(factors) == 1 {
 		return factors[0]
