@@ -21,7 +21,7 @@ func Zero(set sets.Set) sets.Number {
 
 func One(set sets.Set) sets.Number {
 	switch set {
-	case sets.N0, sets.Z:
+	case sets.N, sets.N0, sets.Z:
 		return big.NewInt(1)
 	case sets.Q:
 		return big.NewRat(1, 1)
