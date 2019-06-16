@@ -33,7 +33,7 @@ func (add AddExpr) Derivative(wrt Variable) (Expression, error) {
 			derivedTerms[index] = derivatedTerm
 		}
 	}
-	return Add(derivedTerms...), nil
+	return Add(derivedTerms...).Simplify()
 }
 
 
@@ -44,9 +44,9 @@ func (add AddExpr) CollectVariables(variables Variables) {
 }
 
 
-func (add AddExpr) IsConstant() bool {
+func (add AddExpr) IsConstant(wrt Variable) bool {
 	for _, term := range add.terms {
-		if !term.IsConstant() {
+		if !term.IsConstant(wrt) {
 			return false
 		}
 	}

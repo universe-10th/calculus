@@ -18,7 +18,7 @@ func (factorial FactorialExpr) Derivative(wrt Variable) (Expression, error) {
 	// variable in the wrt parameter.
 	variables := Variables{}
 	factorial.arg.CollectVariables(variables)
-	if _, ok := variables[wrt]; ok {
+	if !factorial.arg.IsConstant(wrt) {
 		return nil, errors.NotDerivableExpression
 	} else {
 		return Num(big.NewFloat(0)), nil
@@ -31,8 +31,8 @@ func (factorial FactorialExpr) CollectVariables(variables Variables) {
 }
 
 
-func (factorial FactorialExpr) IsConstant() bool {
-	return factorial.arg.IsConstant()
+func (factorial FactorialExpr) IsConstant(wrt Variable) bool {
+	return factorial.arg.IsConstant(wrt)
 }
 
 

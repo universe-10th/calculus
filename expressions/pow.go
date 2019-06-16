@@ -54,8 +54,8 @@ func (pow PowExpr) CollectVariables(variables Variables) {
 }
 
 
-func (pow PowExpr) IsConstant() bool {
-	return pow.base.IsConstant() && pow.exponent.IsConstant()
+func (pow PowExpr) IsConstant(wrt Variable) bool {
+	return pow.base.IsConstant(wrt) && pow.exponent.IsConstant(wrt)
 }
 
 
@@ -143,8 +143,8 @@ func (ln LnExpr) CollectVariables(variables Variables) {
 }
 
 
-func (ln LnExpr) IsConstant() bool {
-	return ln.arg.IsConstant()
+func (ln LnExpr) IsConstant(wrt Variable) bool {
+	return ln.arg.IsConstant(wrt)
 }
 
 
@@ -210,8 +210,8 @@ func (log LogExpr) CollectVariables(variables Variables) {
 }
 
 
-func (log LogExpr) IsConstant() bool {
-	return log.base.IsConstant() && log.power.IsConstant()
+func (log LogExpr) IsConstant(wrt Variable) bool {
+	return log.base.IsConstant(wrt) && log.power.IsConstant(wrt)
 }
 
 
@@ -273,8 +273,8 @@ func (exp ExpExpr) CollectVariables(variables Variables) {
 }
 
 
-func (exp ExpExpr) IsConstant() bool {
-	return exp.exponent.IsConstant()
+func (exp ExpExpr) IsConstant(wrt Variable) bool {
+	return exp.exponent.IsConstant(wrt)
 }
 
 

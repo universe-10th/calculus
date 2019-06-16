@@ -47,7 +47,7 @@ func (mul MulExpr) Derivative(wrt Variable) (Expression, error) {
 		}
 		terms[index] = Mul(termFactors...)
 	}
-	return Add(terms...), nil
+	return Add(terms...).Simplify()
 }
 
 
@@ -58,9 +58,9 @@ func (mul MulExpr) CollectVariables(variables Variables) {
 }
 
 
-func (mul MulExpr) IsConstant() bool {
+func (mul MulExpr) IsConstant(wrt Variable) bool {
 	for _, factor := range mul.factors {
-		if !factor.IsConstant() {
+		if !factor.IsConstant(wrt) {
 			return false
 		}
 	}

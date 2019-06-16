@@ -30,7 +30,7 @@ type Expression interface {
 	CollectVariables(Variables)
 	Evaluate(arguments Arguments) (sets.Number, error)
 	Derivative(wrt Variable) (Expression, error)
-	IsConstant() bool
+	IsConstant(wrt Variable) bool
 	Simplify() (Expression, error)
 	fmt.Stringer
 }
@@ -47,8 +47,8 @@ func (variable Variable) CollectVariables(variables Variables) {
 }
 
 
-func (variable Variable) IsConstant() bool {
-	return false
+func (variable Variable) IsConstant(wrt Variable) bool {
+	return variable != wrt
 }
 
 
@@ -90,7 +90,7 @@ func (constant Constant) CollectVariables(Variables) {
 }
 
 
-func (constant Constant) IsConstant() bool {
+func (constant Constant) IsConstant(wrt Variable) bool {
 	return true
 }
 

@@ -22,8 +22,8 @@ func (trig TrigFunctionExpr) CollectVariables(variables Variables) {
 }
 
 
-func (trig TrigFunctionExpr) IsConstant() bool {
-	return trig.arg.IsConstant()
+func (trig TrigFunctionExpr) IsConstant(wrt Variable) bool {
+	return trig.arg.IsConstant(wrt)
 }
 
 

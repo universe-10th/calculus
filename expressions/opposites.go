@@ -35,8 +35,8 @@ func (negated NegatedExpr) CollectVariables(variables Variables) {
 }
 
 
-func (negated NegatedExpr) IsConstant() bool {
-	return negated.arg.IsConstant()
+func (negated NegatedExpr) IsConstant(wrt Variable) bool {
+	return negated.arg.IsConstant(wrt)
 }
 
 
@@ -105,8 +105,8 @@ func (inverse InverseExpr) CollectVariables(variables Variables) {
 }
 
 
-func (inverse InverseExpr) IsConstant() bool {
-	return inverse.arg.IsConstant()
+func (inverse InverseExpr) IsConstant(wrt Variable) bool {
+	return inverse.arg.IsConstant(wrt)
 }
 
 
