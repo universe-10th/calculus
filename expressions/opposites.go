@@ -139,8 +139,11 @@ func (inverse InverseExpr) Simplify() (Expression, error) {
 
 
 func (inverse InverseExpr) String() string {
-	// TODO
-	return ""
+	if _, ok := inverse.arg.(SelfContained); !ok {
+		return fmt.Sprintf("(%s)^-1", inverse.arg)
+	} else {
+		return fmt.Sprintf("%s^-1", inverse.arg)
+	}
 }
 
 
