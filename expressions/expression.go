@@ -131,6 +131,15 @@ func Num(n sets.Number) Constant {
 }
 
 
+func (arguments Arguments) Wrap() Arguments {
+	for key, value := range arguments {
+		wrapped, _ := sets.Wrap(value)
+		arguments[key] = wrapped
+	}
+	return arguments
+}
+
+
 var W = Variable{"W"}
 var X = Variable{"X"}
 var Y = Variable{"Y"}
