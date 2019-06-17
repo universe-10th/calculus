@@ -37,21 +37,67 @@ func (pow PowExpr) Evaluate(args Arguments) (sets.Number, error) {
 }
 
 
+func (pow PowExpr) derivativeBySpecialCases(
+	simplifiedBase, simplifiedExponent Expression, wrt Variable,
+) (Expression, error) {
+	var err error
+	var baseDerivative Expression
+	var exponentDerivative Expression
+	var isSBConstant bool
+	var isSEConstant bool
+	isSBConstant = simplifiedBase.IsConstant(wrt)
+	isSEConstant = simplifiedExponent.IsConstant(wrt)
+
+	if isSBConstant {
+		if isSEConstant {
+			return Num(0), nil
+		} else {
+			if exponentDerivative, err = pow.exponent.Derivative(wrt); err != nil {
+				return nil, err
+			}
+			baseFactor, _ := Ln(simplifiedBase).Simplify()
+			return Mul(Pow(simplifiedBase, simplifiedExponent), baseFactor, exponentDerivative), nil
+			// a^[f(x)]*ln(a)*[df(x)/dx]
+		}
+	} else {
+		if isSEConstant {
+			if baseDerivative, err = pow.base.Derivative(wrt); err != nil {
+				return nil, err
+			}
+			newExponent, _ := Add(simplifiedExponent, Num(-1)).Simplify()
+			return Mul(
+				simplifiedExponent,
+				Pow(simplifiedBase, newExponent),
+				baseDerivative,
+			), nil
+		} else {
+			if baseDerivative, err = pow.base.Derivative(wrt); err != nil {
+				return nil, err
+			}
+			if exponentDerivative, err = pow.exponent.Derivative(wrt); err != nil {
+				return nil, err
+			}
+			first := Pow(pow.base, Add(pow.exponent, Num(-1)))
+			second := Add(Mul(pow.exponent, baseDerivative), Mul(pow.base, Ln(pow.base), exponentDerivative))
+			return Mul(first, second).Simplify()
+		}
+	}
+}
+
+
 func (pow PowExpr) Derivative(wrt Variable) (Expression, error) {
 	// Say we have f(x), g(x)
 	// d[f(x)^g(x)]/dx = f(x)^(g(x)-1) * [g(x)*df(x)/dx + f(x)*ln(f(x))*dg(x)/dx]
 	var err error
-	var baseDerivative Expression
-	var exponentDerivative Expression
-	if baseDerivative, err = pow.base.Derivative(wrt); err != nil {
+	var simplifiedBase Expression
+	var simplifiedExponent Expression
+	if simplifiedBase, err = pow.base.Simplify(); err != nil {
 		return nil, err
 	}
-	if exponentDerivative, err = pow.exponent.Derivative(wrt); err != nil {
+	if simplifiedExponent, err = pow.exponent.Simplify(); err != nil {
 		return nil, err
 	}
-	first := Pow(pow.base, Add(pow.exponent, Num(-1)))
-	second := Add(Mul(pow.exponent, baseDerivative), Mul(pow.base, Ln(pow.base), exponentDerivative))
-	return Mul(first, second).Simplify()
+	return pow.derivativeBySpecialCases(simplifiedBase, simplifiedExponent, wrt)
 }
 
 
