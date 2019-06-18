@@ -64,6 +64,8 @@ func (negated NegatedExpr) String() string {
 func Negated(arg Expression) Expression {
 	if neg, ok := arg.(NegatedExpr); ok {
 		return neg.arg
+	} else if con, ok := arg.(Constant); ok && ops.IsNegative(con.number) {
+		return Constant{ops.Neg(con.number)}
 	} else {
 		return NegatedExpr{arg}
 	}

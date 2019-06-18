@@ -107,6 +107,11 @@ func (add AddExpr) String() string {
 			default:
 				builder.WriteString(inner.String())
 			}
+		case Constant:
+			if ops.IsNegative(v.number) {
+				builder.WriteString(" - ")
+				builder.WriteString(Negated(v).String())
+			}
 		default:
 			builder.WriteString(" + ")
 			builder.WriteString(expression.String())
