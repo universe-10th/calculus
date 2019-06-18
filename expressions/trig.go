@@ -59,7 +59,7 @@ func (sin SinExpr) Simplify() (Expression, error) {
 
 
 func (sin SinExpr) Evaluate(args Arguments) (sets.Number, error) {
-	if result, err := sin.arg.Evaluate(args); err != nil {
+	if result, err := sin.arg.Evaluate(args); err == nil {
 		return ops.Sin(result), nil
 	} else {
 		return nil, err
@@ -88,7 +88,7 @@ func (cos CosExpr) Simplify() (Expression, error) {
 
 
 func (cos CosExpr) Evaluate(args Arguments) (sets.Number, error) {
-	if result, err := cos.arg.Evaluate(args); err != nil {
+	if result, err := cos.arg.Evaluate(args); err == nil {
 		return ops.Cos(result), nil
 	} else {
 		return nil, err
@@ -133,7 +133,7 @@ func (tan TanExpr) Simplify() (Expression, error) {
 
 
 func (tan TanExpr) Evaluate(args Arguments) (sets.Number, error) {
-	if result, err := tan.arg.Evaluate(args); err != nil {
+	if result, err := tan.arg.Evaluate(args); err == nil {
 		return tan.wrappedTan(result)
 	} else {
 		return nil, err
