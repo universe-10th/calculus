@@ -128,6 +128,11 @@ func (constant Constant) IsSelfContained() bool {
 }
 
 
+func (constant Constant) Number() sets.Number {
+	return constant.number
+}
+
+
 func Var(name string) Variable {
 	return Variable{name}
 }
