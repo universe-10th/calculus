@@ -7,11 +7,14 @@ import (
 	"github.com/universe-10th-calculus/errors"
 )
 
+
+// NegatedExpr is a negated expression, like -X or -(X + Y).
 type NegatedExpr struct {
 	arg Expression
 }
 
 
+// Evaluate computes the inner expression's evaluated value and negates it.
 func (negated NegatedExpr) Evaluate(args Arguments) (sets.Number, error) {
 	if result, err := negated.arg.Evaluate(args); err != nil {
 		return nil, err
@@ -21,6 +24,7 @@ func (negated NegatedExpr) Evaluate(args Arguments) (sets.Number, error) {
 }
 
 
+// Derivative just computes the derivative of the inner expression and changes its sign.
 func (negated NegatedExpr) Derivative(wrt Variable) (Expression, error) {
 	if result, err := negated.arg.Derivative(wrt); err != nil {
 		return nil, err
@@ -30,16 +34,20 @@ func (negated NegatedExpr) Derivative(wrt Variable) (Expression, error) {
 }
 
 
+// CollectVariables digs into the inner expression.
 func (negated NegatedExpr) CollectVariables(variables Variables) {
 	negated.arg.CollectVariables(variables)
 }
 
 
+// IsConstant tells whether the inner expression is constant with respect to the given value or not.
 func (negated NegatedExpr) IsConstant(wrt Variable) bool {
 	return negated.arg.IsConstant(wrt)
 }
 
 
+// Simplify evaluates the simplified value of the inner expression, and optimizes it.
+// This means: constant simplified expressions are negated, and negated simplified expressions are unwrapped.
 func (negated NegatedExpr) Simplify() (Expression, error) {
 	if simplified, err := negated.arg.Simplify(); err != nil {
 		return nil, err
@@ -51,6 +59,7 @@ func (negated NegatedExpr) Simplify() (Expression, error) {
 }
 
 
+// String represents the negation appropriately, as -X or -(X).
 func (negated NegatedExpr) String() string {
 	switch v := negated.arg.(type) {
 	case AddExpr:
@@ -61,6 +70,7 @@ func (negated NegatedExpr) String() string {
 }
 
 
+// Negated constructs a negated expression.
 func Negated(arg Expression) Expression {
 	if neg, ok := arg.(NegatedExpr); ok {
 		return neg.arg
@@ -72,11 +82,14 @@ func Negated(arg Expression) Expression {
 }
 
 
+// InverseExpr is an inverted expression, like 1/X or 1/(1 + X).
 type InverseExpr struct {
 	arg Expression
 }
 
 
+// Evaluate computes the value of the inner expression, and then divides 1 by it.
+// It returns an error if a division-by-zero occurs.
 func (inverse InverseExpr) Evaluate(args Arguments) (sets.Number, error) {
 	if result, err := inverse.arg.Evaluate(args); err != nil {
 		return nil, err
@@ -86,6 +99,7 @@ func (inverse InverseExpr) Evaluate(args Arguments) (sets.Number, error) {
 }
 
 
+// Derivative computes the 1/X derivative rule, also applying chain rule appropriately.
 func (inverse InverseExpr) Derivative(wrt Variable) (Expression, error) {
 	if derivative, err := inverse.arg.Derivative(wrt); err != nil {
 		return nil, err
@@ -101,11 +115,13 @@ func (inverse InverseExpr) Derivative(wrt Variable) (Expression, error) {
 }
 
 
+// CollectVariables digs into the inner term.
 func (inverse InverseExpr) CollectVariables(variables Variables) {
 	inverse.arg.CollectVariables(variables)
 }
 
 
+// IsConstant returns whether the inner (to-invert) term is constant with respect to the given variable.
 func (inverse InverseExpr) IsConstant(wrt Variable) bool {
 	return inverse.arg.IsConstant(wrt)
 }
@@ -123,6 +139,7 @@ func (inverse InverseExpr) wrappedInverse(value sets.Number) (result sets.Number
 }
 
 
+// Simplify tries simplifying the inner expression and, if constant, computing the inverse and returning it as constant.
 func (inverse InverseExpr) Simplify() (Expression, error) {
 	if simplified, err := inverse.arg.Simplify(); err != nil {
 		return nil, err
@@ -140,6 +157,7 @@ func (inverse InverseExpr) Simplify() (Expression, error) {
 }
 
 
+// String represents the inverse of a value as X^-1 or (X)^-1.
 func (inverse InverseExpr) String() string {
 	if _, ok := inverse.arg.(SelfContained); !ok {
 		return fmt.Sprintf("(%s)^-1", inverse.arg)
@@ -149,6 +167,7 @@ func (inverse InverseExpr) String() string {
 }
 
 
+// Inverse constructs an inverted expression node.
 func Inverse(arg Expression) Expression {
 	if inv, ok := arg.(InverseExpr); ok {
 		return inv.arg
