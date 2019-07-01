@@ -37,14 +37,14 @@ func NewtonRaphson(expression expressions.Expression, initialGuess, epsilon *big
 		}
 		var iteration uint32
 		for iteration = 0; iteration < maxIterations; iteration++ {
-			// evaluate f(currentArg) into currentImg
+			// evaluate f(currentArg) into currentImg.
 			if currentRes, err = expression.Evaluate(expressions.Arguments{variable: currentArg}); err != nil {
 				return nil, err
 			}
 			if currentImg, err = support.ForceFloat(currentRes); err != nil {
 				return nil, err
 			}
-			// If it is close to zero, then return
+			// If it is close to zero, then return.
 			if support.CloseTo(currentImg, zero, diff, dist, epsilon) {
 				return currentArg, nil
 			}
@@ -55,11 +55,11 @@ func NewtonRaphson(expression expressions.Expression, initialGuess, epsilon *big
 			if currentDerImg, err = support.ForceFloat(currentDerRes); err != nil {
 				return nil, err
 			}
-			// Correct the derivative if zero. Use epsilon instead
+			// Correct the derivative if zero. Use epsilon instead.
 			if currentDerImg.Sign() == 0 {
 				currentDerImg = epsilon
 			}
-			// Compute nextArg = currentArg - func/der
+			// Compute nextArg = currentArg - func/der.
 			currentArg.Sub(currentArg, quot.Quo(currentImg, currentDerImg))
 		}
 		return nil, support.ErrIterationsExhausted
