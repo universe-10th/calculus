@@ -7,11 +7,14 @@ import (
 )
 
 
+// AddExpr is an addition expression. Represents both addition and subtraction.
+// Actually, subtractions are instantiated as additions of negations.
 type AddExpr struct {
 	terms []Expression
 }
 
 
+// Evaluate computes the added evaluted values of the addition terms (recursively).
 func (add AddExpr) Evaluate(args Arguments) (sets.Number, error) {
 	terms := make([]sets.Number, len(add.terms))
 	for index, term := range add.terms {
@@ -25,6 +28,7 @@ func (add AddExpr) Evaluate(args Arguments) (sets.Number, error) {
 }
 
 
+// Derivative applies the addition rule of derivatives.
 func (add AddExpr) Derivative(wrt Variable) (Expression, error) {
 	derivedTerms := make([]Expression, len(add.terms))
 	for index, term := range add.terms {
@@ -38,6 +42,7 @@ func (add AddExpr) Derivative(wrt Variable) (Expression, error) {
 }
 
 
+// CollectVariables digs recursively in the addition terms.
 func (add AddExpr) CollectVariables(variables Variables) {
 	for _, term := range add.terms {
 		term.CollectVariables(variables)
@@ -45,6 +50,7 @@ func (add AddExpr) CollectVariables(variables Variables) {
 }
 
 
+// IsConstant is true only if all the terms are constant with respect to the given variable.
 func (add AddExpr) IsConstant(wrt Variable) bool {
 	for _, term := range add.terms {
 		if !term.IsConstant(wrt) {
@@ -55,6 +61,8 @@ func (add AddExpr) IsConstant(wrt Variable) bool {
 }
 
 
+// Simplify compresses all the constant terms into one single constant term.
+// The result is returned as a new expressions rather than modifying the current one.
 func (add AddExpr) Simplify() (Expression, error) {
 	simplifiedTerms := []sets.Number{}
 	nonSimplifiedTerms := []Expression{}
@@ -85,6 +93,8 @@ func (add AddExpr) Simplify() (Expression, error) {
 }
 
 
+// String represents the addition expression appropriately.
+// This means: it adds parentheses appropriately and also replaces + with - for negated terms of negative constants.
 func (add AddExpr) String() string {
 	builder := strings.Builder{}
 	if len(add.terms) == 0 {
@@ -137,6 +147,7 @@ func flattenTerms(terms []Expression) []Expression {
 }
 
 
+// Add constructs a new addition node given their terms.
 func Add(terms ...Expression) Expression {
 	return AddExpr{flattenTerms(terms)}
 }
