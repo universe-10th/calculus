@@ -7,11 +7,14 @@ import (
 )
 
 
+// MulExpr is a product expression. Represents both multiplication and division.
+// Actually, divisions are instantiated as products of inverses.
 type MulExpr struct {
 	factors []Expression
 }
 
 
+// Evaluate evaluates the product of the evaluated factor's values.
 func (mul MulExpr) Evaluate(args Arguments) (sets.Number, error) {
 	factors := make([]sets.Number, len(mul.factors))
 	for index, term := range mul.factors {
@@ -25,6 +28,11 @@ func (mul MulExpr) Evaluate(args Arguments) (sets.Number, error) {
 }
 
 
+// Derivative applies the multiplication rule of derivatives.
+// While we are used to the simple case of (fg)' = f'g + g'f,
+// the general case involves n terms of the n factors being
+// multiplied, and inside each different term, a different
+// function is being derived.
 func (mul MulExpr) Derivative(wrt Variable) (Expression, error) {
 	factors := make([]Expression, len(mul.factors))
 	for index, factor := range mul.factors {
@@ -54,6 +62,7 @@ func (mul MulExpr) Derivative(wrt Variable) (Expression, error) {
 }
 
 
+// CollectVariables digs into the inner factors.
 func (mul MulExpr) CollectVariables(variables Variables) {
 	for _, term := range mul.factors {
 		term.CollectVariables(variables)
@@ -61,6 +70,7 @@ func (mul MulExpr) CollectVariables(variables Variables) {
 }
 
 
+// IsConstant returns whether all the factors are constant with respect to the given variable.
 func (mul MulExpr) IsConstant(wrt Variable) bool {
 	for _, factor := range mul.factors {
 		if !factor.IsConstant(wrt) {
@@ -71,6 +81,10 @@ func (mul MulExpr) IsConstant(wrt Variable) bool {
 }
 
 
+// Simplify compresses all the constant factors into one single constant factor.
+// The result is returned as a new expressions rather than modifying the current one.
+// Note: this method is optimized: if at least one factor results in constant 0, the
+// constant 0 expression will be returned.
 func (mul MulExpr) Simplify() (Expression, error) {
 	simplifiedTerms := []sets.Number{}
 	nonSimplifiedTerms := []Expression{}
@@ -105,6 +119,8 @@ func (mul MulExpr) Simplify() (Expression, error) {
 }
 
 
+// String represents the multiplication expression appropriately.
+// This means: it adds parentheses appropriately and also replaces * with / for inverted terms.
 func (mul MulExpr) String() string {
 	builder := strings.Builder{}
 	if len(mul.factors) == 0 {
@@ -168,6 +184,7 @@ func flattenFactors(factors []Expression) []Expression {
 }
 
 
+// Mul constructs a new multiplication node given their factors.
 func Mul(factors ...Expression) Expression {
 	return MulExpr{flattenFactors(factors)}
 }

@@ -94,7 +94,7 @@ func (add AddExpr) Simplify() (Expression, error) {
 
 
 // String represents the addition expression appropriately.
-// This means: it adds parentheses appropriately and also replaces + with - for negated terms of negative constants.
+// This means: it adds parentheses appropriately and also replaces + with - for negated terms or negative constants.
 func (add AddExpr) String() string {
 	builder := strings.Builder{}
 	if len(add.terms) == 0 {
