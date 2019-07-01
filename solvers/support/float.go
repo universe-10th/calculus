@@ -7,6 +7,7 @@ import (
 )
 
 
+// ForceFloat converts any *big.(Int, Rat, Float) into *big.Float.
 func ForceFloat(value sets.Number) (*big.Float, error) {
 	switch v := value.(type) {
 	case *big.Float:
