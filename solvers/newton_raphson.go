@@ -14,7 +14,7 @@ import (
 var ErrMaxNewtonRaphsonArgCorrections = errors.New("could not correct the argument to avoid a zero derivative")
 
 
-func findNewtonRaphsonValidArg(expression, derivative expressions.Expression, variable expressions.Variable,
+func nextNewtonRaphsonStep(expression, derivative expressions.Expression, variable expressions.Variable,
 	                           currentRes, currentDerRes sets.Number, currentImg, currentDerImg, quot *big.Float,
 	                           arg, epsilon, delta, random *big.Float, maxArgCorrections uint32) (*big.Float, error) {
 	var err error
@@ -41,6 +41,7 @@ func findNewtonRaphsonValidArg(expression, derivative expressions.Expression, va
 					return nil, err
 				}
 			}
+			// Compute x = x - f(x)/f'(x).
 			current.Sub(current, quot.Quo(currentImg, currentDerImg))
 			return current, nil
 		} else {
@@ -100,7 +101,7 @@ func NewtonRaphson(expression expressions.Expression, initialGuess, epsilon *big
 				return currentArg, nil
 			}
 			// Otherwise, process a newton-raphson step.
-			if currentArg, err = findNewtonRaphsonValidArg(
+			if currentArg, err = nextNewtonRaphsonStep(
 				expression, derivative, variable, currentRes, currentDerRes, currentImg, currentDerImg, quot,
 				currentArg, epsilon, delta, random, maxArgCorrectionsPerIteration,
 			); err != nil {
