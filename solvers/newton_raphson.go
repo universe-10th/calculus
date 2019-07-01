@@ -56,6 +56,9 @@ func NewtonRaphson(expression expressions.Expression, initialGuess, epsilon *big
 				return nil, err
 			}
 			// Correct the derivative if zero. Use epsilon instead.
+			// TODO This is wrong. If the derivative is zero, one has to add the epsilon to X instead,
+			// TODO   and then attempt again a calculation of f(x) and g(x), repeating this process until
+			// TODO   a derivative != 0 is found.
 			if currentDerImg.Sign() == 0 {
 				currentDerImg = epsilon
 			}
