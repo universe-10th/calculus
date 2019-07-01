@@ -1,17 +1,30 @@
+// Sets package contains utils related to numeric sets.
 package sets
 
 import "math/big"
 
+
+// Number is a marker type that tells the given values will be treated as numbers.
+// Hence, few types are actually allowed here.
 type Number interface{}
+
+
+// Set stands for numbers sets like real, integer, rational[, no complex supported yet due to the lack of *big.Complex].
 type Set uint
 
 
 const (
+	// N stands for natural numbers.
 	N Set = iota
+	// N0 stands for natural numbers and zero.
 	N0
+	// Z stands for integer numbers.
 	Z
+	// Q stands for rational numbers.
 	Q
+	// R stands for real numbers.
 	R
+	// Invalid stands for an invalid set.
 	Invalid
 )
 
@@ -20,6 +33,7 @@ var zeroInt = big.NewInt(0)
 var sets    = []Set{N, N0, Z, Q, R}
 
 
+// Valid tests whether the given set is among N, N0, Z, Q, R.
 func Valid(set Set) bool {
 	for _, s := range sets {
 		if set == s {
@@ -39,6 +53,8 @@ func setForUInt(value uint) Set {
 }
 
 
+// Wrap makes a *big.(Int, Rat, Float) value out of a numeric primitive type.
+// If given a *big.(Int, Rat, Float) object, it is returned as-is.
 func Wrap(value interface{}) (Number, Set) {
 	switch c := value.(type) {
 	case int:
@@ -74,6 +90,8 @@ func Wrap(value interface{}) (Number, Set) {
 }
 
 
+// Clone makes a copy of the given *big.(Int, Rat, Float) object.
+// Other values are returned as-is.
 func Clone(value interface{}) Number {
 	switch c := value.(type) {
 	case *big.Float:
@@ -124,6 +142,7 @@ func broader(a, b Set) Set {
 }
 
 
+// BroaderAll computes the minimal set that includes all the given sets.
 func BroaderAll(sets ...Set) Set {
 	if sets == nil {
 		return Invalid
@@ -157,6 +176,7 @@ func closest(a Number) Set {
 }
 
 
+// ClosestAll returns, for the given arguments, the minimal sets that include them each.
 func ClosestAll(a ...Number) []Set {
 	sets := make([]Set, len(a))
 	for index, value := range a {
@@ -166,6 +186,7 @@ func ClosestAll(a ...Number) []Set {
 }
 
 
+// BelongsTo returns whether a given number is a member of a given set.
 func BelongsTo(a Number, set Set) bool {
 	switch va := a.(type) {
 	case *big.Float:
@@ -201,6 +222,11 @@ func upCast(a Number, s Set) Number {
 }
 
 
+// UpCastTo ensures all the given numbers are converted to the appropriate set.
+// Depending on the given set, the given numbers will be converted, one by one,
+// to the type belonging to the set... unless they are of that type, or broader.
+// E.g. a *big.Float will not be cast to *big.Int if the set is Z, but will
+// remain a *big.Float.
 func UpCastTo(toSet Set, a ...Number) []Number {
 	result := make([]Number, len(a))
 	for index, value := range a {
@@ -210,6 +236,7 @@ func UpCastTo(toSet Set, a ...Number) []Number {
 }
 
 
+// UpCast casts all the given numbers to their closest common set.
 func UpCast(a ...Number) []Number {
 	if a == nil {
 		return nil
