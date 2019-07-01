@@ -1,3 +1,6 @@
+// Expressions package contains elements that are understood as mathematical expressions.
+// Arithmetic, power/logarithm, and trigonometric operators/functions are supported. They
+// are composed as nodes in trees.
 package expressions
 
 import (
@@ -12,51 +15,78 @@ var zero = big.NewFloat(0)
 var one  = big.NewFloat(1)
 
 
+// Constant stands for a simple number node, e.g. 3, 4/5, or 3.1415926535.
 type Constant struct {
 	number sets.Number
 }
 
 
+// Variable stands for a variable node, like X, Y, Z, W or whatever you like.
 type Variable struct {
 	name string
 }
+
+
+// Variables stands for a map of variable => bool. Intended to work like a set.
 type Variables map[Variable]bool
 
 
+// Arguments are, actually, an interpretation. They are a map of variables to their values.
 type Arguments map[Variable]sets.Number
 
 
+// Expression is the interface behind each node.
 type Expression interface {
+	// CollectVariables enumerates all the variables involved recursively in the node into the given set.
 	CollectVariables(Variables)
+	// Evaluate tries to evaluate the expression, recursively, given some arguments.
 	Evaluate(arguments Arguments) (sets.Number, error)
+	// Derivative generates a new expression being the derivative of the current one.
 	Derivative(wrt Variable) (Expression, error)
+	// IsConstant tells whether this expression is constant with respect to a variable.
+	// It asks recursively and fails if it finds at least one node being == variable.
+	// E.g. (X + 3) is not a constant expression per se, but it is with respect to Y.
 	IsConstant(wrt Variable) bool
+	// Simplify generates a simplified expression of this one.
+	// Currently, this only converts to constants every expression involving only
+	// constants, and does not any heuristic regarding (x+1)/(x+1) or actual
+	// simplification processes.
 	Simplify() (Expression, error)
 	fmt.Stringer
 }
 
 
+// SelfContained tells whether an expression is self-contained in representation.
+// For example: negations are self-contained, as well as numbers or functions like
+// Ln(x), Log(x), Sin(x), Cos(x), Tan(x). In human words: no extra parentheses would
+// be ever needed around them. Never.
 type SelfContained interface {
 	Expression
+	// A marker function distinguishing this interface.
 	IsSelfContained() bool
 }
 
 
+// CollectVariables adds the current variable to the set.
 func (variable Variable) CollectVariables(variables Variables) {
 	variables[variable] = true
 }
 
 
+// IsConstant checks whether the current variable is the given one.
 func (variable Variable) IsConstant(wrt Variable) bool {
 	return variable != wrt
 }
 
 
+// Simplify returns the same variable. There is nothing to simplify here.
 func (variable Variable) Simplify() (Expression, error) {
 	return variable, nil
 }
 
 
+// Evaluate just drags the appropriate value from the given arguments.
+// It returns an error if a value for the current variable is not present.
 func (variable Variable) Evaluate(args Arguments) (sets.Number, error) {
 	if value, ok := args[variable]; !ok {
 		return nil, errors.UndefinedValue
@@ -66,6 +96,8 @@ func (variable Variable) Evaluate(args Arguments) (sets.Number, error) {
 }
 
 
+// Derivative returns a 0 or 1 constant expression.
+// The 0 will be in the case the variables are not the same.
 func (variable Variable) Derivative(wrt Variable) (Expression, error) {
 	if variable == wrt {
 		return Constant{one}, nil
@@ -75,6 +107,7 @@ func (variable Variable) Derivative(wrt Variable) (Expression, error) {
 }
 
 
+// String returns the variable name.
 func (variable Variable) String() string {
 	return variable.name
 }
@@ -85,31 +118,37 @@ func (variable Variable) IsSelfContained() bool {
 }
 
 
+// CollectVariables does nothing in this type.
 func (constant Constant) CollectVariables(Variables) {
 	// Does nothing
 }
 
 
+// IsConstant is always true regarding constant expressions.
 func (constant Constant) IsConstant(wrt Variable) bool {
 	return true
 }
 
 
+// Simplify returns the same constant. There is nothing to simplify here.
 func (constant Constant) Simplify() (Expression, error) {
 	return constant, nil
 }
 
 
+// Evaluate ignores any argument and returns the constant's value.
 func (constant Constant) Evaluate(args Arguments) (sets.Number, error) {
 	return constant.number, nil
 }
 
 
+// Derivative is a 0 expression for any constant.
 func (constant Constant) Derivative(wrt Variable) (Expression, error) {
 	return Constant{zero}, nil
 }
 
 
+// String returns the constant's string representation, according to its inner type.
 func (constant Constant) String() string {
 	switch c := constant.number.(type) {
 	case *big.Float:
@@ -128,22 +167,27 @@ func (constant Constant) IsSelfContained() bool {
 }
 
 
+// Number returns the constant's inner value.
+// Usually needed in simplification process.
 func (constant Constant) Number() sets.Number {
 	return constant.number
 }
 
 
+// Var constructs a new Variable node.
 func Var(name string) Variable {
 	return Variable{name}
 }
 
 
+// Num constructs a new Constant node.
 func Num(n sets.Number) Constant {
 	wrapped, _ := sets.Wrap(sets.Clone(n))
 	return Constant{wrapped}
 }
 
 
+// Wrap wraps all the values as arguments, and returns the same map.
 func (arguments Arguments) Wrap() Arguments {
 	for key, value := range arguments {
 		wrapped, _ := sets.Wrap(value)
