@@ -27,6 +27,21 @@ func (pow PowExpr) wrappedPow(base, exponent sets.Number) (result sets.Number, e
 }
 
 
+// Curry tries currying the underlying base and exponent expressions, and then generating a final expression.
+// A simplification will also be attempted here if the curried expressions result to be constant.
+func (pow PowExpr) Curry(args Arguments) (Expression, error) {
+	var curriedBase, curriedExponent Expression
+	var err error
+	if curriedBase, err = pow.base.Curry(args); err != nil {
+		return nil, err
+	}
+	if curriedExponent, err = pow.exponent.Curry(args); err != nil {
+		return nil, err
+	}
+	return Pow(curriedBase, curriedExponent).Simplify()
+}
+
+
 // Evaluate computes the power of the expression considering base and exponent.
 // Base expression and exponent expression are first evaluated.
 func (pow PowExpr) Evaluate(args Arguments) (sets.Number, error) {
@@ -179,6 +194,16 @@ func (ln LnExpr) wrappedLn(power sets.Number) (result sets.Number, err error) {
 }
 
 
+// Curry tries currying the underlying expression first, and then attempts simplifying.
+func (ln LnExpr) Curry(args Arguments) (Expression, error) {
+	if curried, err := ln.arg.Curry(args); err != nil {
+		return nil, err
+	} else {
+		return Ln(curried).Simplify()
+	}
+}
+
+
 // Evaluate returns the natural logarithm of the evaluated inner expression's value.
 // It returns an error if the inner value is negative.
 func (ln LnExpr) Evaluate(args Arguments) (sets.Number, error) {
@@ -259,6 +284,21 @@ func (log LogExpr) wrappedLn(power, base sets.Number) (result sets.Number, err e
 	}()
 	result = ops.Log(power, base)
 	return
+}
+
+
+// Curry tries currying the underlying base and power expressions, and then generating a final expression.
+// A simplification will also be attempted here if the curried expressions result to be constant.
+func (log LogExpr) Curry(args Arguments) (Expression, error) {
+	var curriedBase, curriedPower Expression
+	var err error
+	if curriedBase, err = log.base.Curry(args); err != nil {
+		return nil, err
+	}
+	if curriedPower, err = log.power.Curry(args); err != nil {
+		return nil, err
+	}
+	return Log(curriedBase, curriedPower).Simplify()
 }
 
 
@@ -346,6 +386,16 @@ func (exp ExpExpr) Derivative(wrt Variable) (Expression, error) {
 		return nil, err
 	} else {
 		return Mul(Exp(exp.exponent), derivative).Simplify()
+	}
+}
+
+
+// Curry tries currying the underlying expression first, and then attempts simplifying.
+func (exp ExpExpr) Curry(args Arguments) (Expression, error) {
+	if curried, err := exp.exponent.Curry(args); err != nil {
+		return nil, err
+	} else {
+		return Exp(curried).Simplify()
 	}
 }
 

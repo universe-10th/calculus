@@ -39,6 +39,11 @@ type Arguments map[Variable]sets.Number
 type Expression interface {
 	// CollectVariables enumerates all the variables involved recursively in the node into the given set.
 	CollectVariables(Variables)
+	// Curry generates a new expression by evaluating/freezing the variables given some arguments.
+	// E.g. Add(X, Y).Curry(Arguments{Y: 3}) would yield a new expression: Add(X, Num(3)).
+	// In the bound cases, passing no relevant argument will return a cloned expression, and
+	// passing all the relevant arguments will return a constant, simplified, expression.
+	Curry(arguments Arguments) (Expression, error)
 	// Evaluate tries to evaluate the expression, recursively, given some arguments.
 	Evaluate(arguments Arguments) (sets.Number, error)
 	// Derivative generates a new expression being the derivative of the current one.
@@ -82,6 +87,19 @@ func (variable Variable) IsConstant(wrt Variable) bool {
 // Simplify returns the same variable. There is nothing to simplify here.
 func (variable Variable) Simplify() (Expression, error) {
 	return variable, nil
+}
+
+
+// Curry tries to partially evaluate the expression.
+// In the case of variables, it will return the same variable (if absent from
+// the arguments) or return a constant with the argument value (if present in
+// the arguments).
+func (variable Variable) Curry(args Arguments) (Expression, error) {
+	if value, ok := args[variable]; ok {
+		return Num(value), nil
+	} else {
+		return variable, nil
+	}
 }
 
 
@@ -132,6 +150,13 @@ func (constant Constant) IsConstant(wrt Variable) bool {
 
 // Simplify returns the same constant. There is nothing to simplify here.
 func (constant Constant) Simplify() (Expression, error) {
+	return constant, nil
+}
+
+
+// Curry tries to partially evaluate the expression.
+// This has no special meaning in constants: the same constant will be returned.
+func (constant Constant) Curry(args Arguments) (Expression, error) {
 	return constant, nil
 }
 

@@ -74,6 +74,16 @@ func (factorial FactorialExpr) wrappedFactorial(input sets.Number) (result sets.
 }
 
 
+// Curry tries currying the underlying expression first, and then attempts simplifying.
+func (factorial FactorialExpr) Curry(args Arguments) (Expression, error) {
+	if curried, err := factorial.arg.Curry(args); err != nil {
+		return nil, err
+	} else {
+		return Factorial(curried).Simplify()
+	}
+}
+
+
 // Evaluate computes the factorial over the evaluated inner argument's value.
 // It will be an error if the inner value does not evaluate into N0.
 func (factorial FactorialExpr) Evaluate(args Arguments) (sets.Number, error) {

@@ -14,6 +14,22 @@ type MulExpr struct {
 }
 
 
+// Curry will try currying each factor independently, and then generate a new multiplication.
+// The terms may be converted to constant terms. Considering this, Curry will try simplifying
+// the expression before returning it.
+func (mul MulExpr) Curry(args Arguments) (Expression, error) {
+	newFactors := make([]Expression, len(mul.factors))
+	for index, value := range mul.factors {
+		if curried, err := value.Curry(args); err != nil {
+			return nil, err
+		} else {
+			newFactors[index] = curried
+		}
+	}
+	return Mul(newFactors...).Simplify()
+}
+
+
 // Evaluate evaluates the product of the evaluated factor's values.
 func (mul MulExpr) Evaluate(args Arguments) (sets.Number, error) {
 	factors := make([]sets.Number, len(mul.factors))

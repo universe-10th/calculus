@@ -14,6 +14,16 @@ type NegatedExpr struct {
 }
 
 
+// Curry tries currying the underlying expression first, and then attempts simplifying.
+func (negated NegatedExpr) Curry(args Arguments) (Expression, error) {
+	if curried, err := negated.arg.Curry(args); err != nil {
+		return nil, err
+	} else {
+		return Negated(curried).Simplify()
+	}
+}
+
+
 // Evaluate computes the inner expression's evaluated value and negates it.
 func (negated NegatedExpr) Evaluate(args Arguments) (sets.Number, error) {
 	if result, err := negated.arg.Evaluate(args); err != nil {
@@ -85,6 +95,16 @@ func Negated(arg Expression) Expression {
 // InverseExpr is an inverted expression, like 1/X or 1/(1 + X).
 type InverseExpr struct {
 	arg Expression
+}
+
+
+// Curry tries currying the underlying expression first, and then attempts simplifying.
+func (inverse InverseExpr) Curry(args Arguments) (Expression, error) {
+	if curried, err := inverse.arg.Curry(args); err != nil {
+		return nil, err
+	} else {
+		return Inverse(curried).Simplify()
+	}
 }
 
 

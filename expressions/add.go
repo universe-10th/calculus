@@ -14,6 +14,22 @@ type AddExpr struct {
 }
 
 
+// Curry will try currying each term independently, and then generate a new addition.
+// The terms may be converted to constant terms. Considering this, Curry will try
+// simplifying the expression before returning it.
+func (add AddExpr) Curry(args Arguments) (Expression, error) {
+	newTerms := make([]Expression, len(add.terms))
+	for index, value := range add.terms {
+		if curried, err := value.Curry(args); err != nil {
+			return nil, err
+		} else {
+			newTerms[index] = curried
+		}
+	}
+	return Add(newTerms...).Simplify()
+}
+
+
 // Evaluate computes the added evaluted values of the addition terms (recursively).
 func (add AddExpr) Evaluate(args Arguments) (sets.Number, error) {
 	terms := make([]sets.Number, len(add.terms))
@@ -121,6 +137,9 @@ func (add AddExpr) String() string {
 			if ops.IsNegative(v.number) {
 				builder.WriteString(" - ")
 				builder.WriteString(Negated(v).String())
+			} else {
+				builder.WriteString(" + ")
+				builder.WriteString(expression.String())
 			}
 		default:
 			builder.WriteString(" + ")

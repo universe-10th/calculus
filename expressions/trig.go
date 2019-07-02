@@ -71,6 +71,16 @@ func (sin SinExpr) Simplify() (Expression, error) {
 }
 
 
+// Curry tries currying the underlying expression first, and then attempts simplifying.
+func (sin SinExpr) Curry(args Arguments) (Expression, error) {
+	if curried, err := sin.arg.Curry(args); err != nil {
+		return nil, err
+	} else {
+		return Sin(curried).Simplify()
+	}
+}
+
+
 // Evaluate computes the sine expression by first computing the inner expression, and then applying the sine.
 func (sin SinExpr) Evaluate(args Arguments) (sets.Number, error) {
 	if result, err := sin.arg.Evaluate(args); err == nil {
@@ -100,6 +110,16 @@ func (cos CosExpr) Simplify() (Expression, error) {
 		return Constant{ops.Cos(num.number)}, nil
 	} else {
 		return Cos(simplified), nil
+	}
+}
+
+
+// Curry tries currying the underlying expression first, and then attempts simplifying.
+func (cos CosExpr) Curry(args Arguments) (Expression, error) {
+	if curried, err := cos.arg.Curry(args); err != nil {
+		return nil, err
+	} else {
+		return Sin(curried).Simplify()
 	}
 }
 
@@ -149,6 +169,16 @@ func (tan TanExpr) Simplify() (Expression, error) {
 		}
 	} else {
 		return Tan(simplified), nil
+	}
+}
+
+
+// Curry tries currying the underlying expression first, and then attempts simplifying.
+func (tan TanExpr) Curry(args Arguments) (Expression, error) {
+	if curried, err := tan.arg.Curry(args); err != nil {
+		return nil, err
+	} else {
+		return Sin(curried).Simplify()
 	}
 }
 
