@@ -124,7 +124,11 @@ func (mul MulExpr) Simplify() (Expression, error) {
 		if simplifiedSummary != nil && !ops.IsOne(simplifiedSummary) {
 			nonSimplifiedTerms = append(nonSimplifiedTerms, Constant{simplifiedSummary})
 		}
-		return Mul(nonSimplifiedTerms...), nil
+		if len(nonSimplifiedTerms) == 1 {
+			return nonSimplifiedTerms[0], nil
+		} else {
+			return Mul(nonSimplifiedTerms...), nil
+		}
 	} else {
 		if simplifiedSummary != nil {
 			return Constant{simplifiedSummary}, nil

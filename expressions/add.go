@@ -98,7 +98,11 @@ func (add AddExpr) Simplify() (Expression, error) {
 		if simplifiedSummary != nil && !ops.IsZero(simplifiedSummary) {
 			nonSimplifiedTerms = append(nonSimplifiedTerms, Constant{simplifiedSummary})
 		}
-		return Add(nonSimplifiedTerms...), nil
+		if len(nonSimplifiedTerms) == 1 {
+			return nonSimplifiedTerms[0], nil
+		} else {
+			return Add(nonSimplifiedTerms...), nil
+		}
 	} else {
 		if simplifiedSummary != nil {
 			return Constant{simplifiedSummary}, nil
