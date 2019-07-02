@@ -120,9 +120,15 @@ func (mul MulExpr) Simplify() (Expression, error) {
 		return Num(0), nil
 	}
 
-	if len(nonSimplifiedTerms) != 0 {
+	length := len(nonSimplifiedTerms)
+	if length != 0 {
 		if simplifiedSummary != nil && !ops.IsOne(simplifiedSummary) {
-			nonSimplifiedTerms = append(nonSimplifiedTerms, Constant{simplifiedSummary})
+			finalTerms := make([]Expression, length + 1)
+			finalTerms[0] = Constant{simplifiedSummary}
+			for index, term := range nonSimplifiedTerms {
+				finalTerms[index + 1] = term
+			}
+			nonSimplifiedTerms = finalTerms
 		}
 		if len(nonSimplifiedTerms) == 1 {
 			return nonSimplifiedTerms[0], nil
