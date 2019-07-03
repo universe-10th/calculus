@@ -212,6 +212,18 @@ func Num(n sets.Number) Constant {
 }
 
 
+// Ensure takes an arbitrary value and creates an expression out of it.
+// If the value was already an expression, it returns it as-is.
+// Otherwise, it makes a constant expression out of it.
+func Ensure(n interface{}) Expression {
+	if exp, ok := n.(Expression); ok {
+		return exp
+	} else {
+		return Num(n.(sets.Number))
+	}
+}
+
+
 // Wrap wraps all the values as arguments, and returns the same map.
 func (arguments Arguments) Wrap() Arguments {
 	for key, value := range arguments {
