@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"github.com/universe-10th-calculus/expressions"
-	"github.com/universe-10th-calculus/sets"
-	"github.com/universe-10th-calculus/ops"
+	"github.com/universe-10th/calculus/expressions"
+	"github.com/universe-10th/calculus/sets"
+	"github.com/universe-10th/calculus/ops"
 )
 
 

@@ -1,6 +1,6 @@
 package utils
 
-import "github.com/universe-10th-calculus/expressions"
+import "github.com/universe-10th/calculus/expressions"
 
 
 // Creates a polynomial expressions given an involved variable and their coefficients.

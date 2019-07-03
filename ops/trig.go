@@ -1,7 +1,7 @@
 package ops
 
 import (
-	"github.com/universe-10th-calculus/sets"
+	"github.com/universe-10th/calculus/sets"
 	"math/big"
 	"math"
 )

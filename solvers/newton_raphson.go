@@ -2,9 +2,9 @@ package solvers
 
 import (
 	"math/big"
-	"github.com/universe-10th-calculus/expressions"
-	"github.com/universe-10th-calculus/solvers/support"
-	"github.com/universe-10th-calculus/sets"
+	"github.com/universe-10th/calculus/expressions"
+	"github.com/universe-10th/calculus/solvers/support"
+	"github.com/universe-10th/calculus/sets"
 	"errors"
 	"math/rand"
 	"time"

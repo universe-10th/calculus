@@ -1,4 +1,4 @@
-module github.com/universe-10th-calculus
+module github.com/universe-10th/calculus
 
 go 1.12
 
