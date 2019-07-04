@@ -15,8 +15,8 @@ var ErrMaxNewtonRaphsonArgCorrections = errors.New("could not correct the argume
 
 
 func nextNewtonRaphsonStep(expression, derivative expressions.Expression, variable expressions.Variable,
-	                           currentRes, currentDerRes sets.Number, currentImg, currentDerImg, quot *big.Float,
-	                           arg, epsilon, delta, random *big.Float, maxArgCorrections uint32) (*big.Float, error) {
+	                       currentRes, currentDerRes sets.Number, currentImg, currentDerImg, quot *big.Float,
+	                       arg, epsilon, delta, random *big.Float, maxArgCorrections uint32) (*big.Float, error) {
 	var err error
 	var current = arg
 	var recalculate = false
