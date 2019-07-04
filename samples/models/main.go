@@ -37,9 +37,9 @@ func main() {
 	result, err = model.Evaluate(Arguments{
 		W: 1, Y: 2, Z: 3,
 	}.Wrap(), nrSolver)
-	fmt.Printf("Return after evaluating W=Model^-1(W: 1, Y: 2, Z: 3): %v %v\n", result, err)
+	fmt.Printf("Return after evaluating X=Model^-1(W: 1, Y: 2, Z: 3): %v %v\n", result, err)
 	result, err = model.Evaluate(Arguments{
 		X: 1, W: 2, Z: 3,
 	}.Wrap(), nrSolver)
-	fmt.Printf("Return after evaluating W=Model^-1(X: 1, W: 2, Z: 3): %v %v\n", result, err)
+	fmt.Printf("Return after evaluating Y=Model^-1(X: 1, W: 2, Z: 3): %v %v\n", result, err)
 }
