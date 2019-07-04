@@ -41,5 +41,7 @@ func main() {
 	result, err = model.Evaluate(Arguments{
 		X: 1, W: 2, Z: 3,
 	}.Wrap(), nrSolver)
+	// It WILL fail with Newton-Raphson, since the function is not quadratically convergent.
+	// It will try more and more bigger negative values for Y, and then will return derivative of 0 due to lack of precision.
 	fmt.Printf("Return after evaluating Y=Model^-1(X: 1, W: 2, Z: 3): %v %v\n", result, err)
 }
