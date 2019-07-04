@@ -209,7 +209,7 @@ func (model *Model) Evaluate(args Arguments, solver solvers.Solver) (sets.Number
 		} else if model.mainValue != nil {
 			return solver(GoalBasedExpression(curried, model.mainValue))
 		} else {
-			return solver(GoalBasedExpression(curried, args[variable]))
+			return solver(GoalBasedExpression(curried, args[model.mainVariable]))
 		}
 		return nil, nil
 	} else {
