@@ -4,6 +4,7 @@ import (
 	. "github.com/universe-10th/calculus/expressions"
 	"errors"
 	"github.com/universe-10th/calculus/sets"
+	"github.com/universe-10th/calculus/solvers"
 )
 
 
@@ -12,6 +13,7 @@ var ErrMainVariableInsideMainExpression = errors.New("model's main variable is i
 var ErrMainExpressionIsConstant = errors.New("model's main expression is constant")
 var ErrNoMissingVariable = errors.New("model cannot be evaluated: no missing variable from arguments")
 var ErrMultipleMissingVariables = errors.New("model cannot be evaluated: multiple missing variables from arguments (perhaps a partial model was intended?)")
+var ErrSolverNotGivenWhileNoCorollary = errors.New("model cannot be evaluated: attempted to evaluate a variable with no corollary, and no solver was given")
 
 
 // Model involves an expression and a variable which is the
@@ -138,13 +140,33 @@ func (model *Model) getMissingVariable(args Arguments) (Variable, error) {
 // Evaluating a model implying (N+1) variables will involve specifying N arguments
 // which correspond to the variables and leaving exactly one variable out. The
 // returned value will correspond to that missing variable.
-func (model *Model) Evaluate(args Arguments) (sets.Number, error) {
+func (model *Model) Evaluate(args Arguments, solver solvers.Solver) (sets.Number, error) {
 	if variable, err := model.getMissingVariable(args); err != nil {
+		// WRONG: Exactly one variable must be missing.
 		return nil, err
 	} else if variable == model.mainVariable {
+		// Evaluate the main expression to compute the value for the main variable.
 		return model.mainExpression.Evaluate(args)
 	} else if corollary := model.corollaries[variable]; corollary == nil {
-		// TODO attempt a newton-raphson evaluation here.
+		// There is no corollary to evaluate. We will take the main expression
+		// and partially evaluate it with the given arguments (the main variable
+		// among the arguments will be ignored).
+		// After it is curried, a variable will be free (the variable that we
+		// want to calculate its value) so we need to convert our curried
+		// expression which is f(variable)==V to g(variable)-V==0, where V is
+		// the value of the main variable (either present in the current model or
+		// present among the arguments).
+		// After getting the goal function, a solver must be present and it will
+		// be run to compute the result value.
+		if solver == nil {
+			return nil, ErrSolverNotGivenWhileNoCorollary
+		} else if curried, err := model.mainExpression.Curry(args); err != nil {
+			return nil, err
+		} else if model.mainValue != nil {
+			return solver(GoalBasedExpression(curried, model.mainValue))
+		} else {
+			return solver(GoalBasedExpression(curried, args[variable]))
+		}
 		return nil, nil
 	} else {
 		return corollary.Evaluate(args)
