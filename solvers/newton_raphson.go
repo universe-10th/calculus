@@ -46,7 +46,7 @@ func nextNewtonRaphsonStep(expression, derivative expressions.Expression, variab
 			return current, nil
 		} else {
 			recalculate = true
-			random.SetFloat64(rand.Float64())
+			random.SetFloat64(rand.Float64() - 0.5)
 			current.Add(current, delta.Mul(epsilon, random))
 		}
 	}
