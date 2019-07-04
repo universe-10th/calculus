@@ -14,6 +14,8 @@ var ErrMainExpressionIsConstant = errors.New("model's main expression is constan
 var ErrNoMissingVariable = errors.New("model cannot be evaluated: no missing variable from arguments")
 var ErrMultipleMissingVariables = errors.New("model cannot be evaluated: multiple missing variables from arguments (perhaps a partial model was intended?)")
 var ErrSolverNotGivenWhileNoCorollary = errors.New("model cannot be evaluated: attempted to evaluate a variable with no corollary, and no solver was given")
+var ErrModelDoesNotReferVariable = errors.New("cannot change corollary: the given variable is not referred by the model")
+var ErrCorollaryDoesNotReferExpectedVariables = errors.New("cannot change corollary: the given corollary does not refer the corresponding variables")
 
 
 // Model involves an expression and a variable which is the
@@ -69,6 +71,47 @@ func NewModel(variable Variable, expression Expression) (*Model, error) {
 
 	// If everything is satisfied, we're ok.
 	return &Model{variable, nil,expression, corollaries}, nil
+}
+
+
+// SetCorollary sets a corollary for the given variable in the model.
+// The corollary must use the model's main variable and only those variables that are part of the model.
+// Example: If the model is A=B*C + D, a corollary for D would be: D=A-B*C.
+// A valid corollary is the nil value. It will use a solver instead when evaluating.
+func (model *Model) SetCorollary(variable Variable, expression Expression) error {
+	if _, ok := model.corollaries[variable]; !ok {
+		return ErrModelDoesNotReferVariable
+	} else {
+		if expression == nil {
+			// remove the corollary - a solver will be used.
+			model.corollaries[variable] = nil
+		} else {
+			// The expression must include all the model variables EXCEPT the given one.
+			// Also, the expression must contain the main variable.
+			// Finally, the expression must not contain any other variable.
+			variables := Variables{}
+			expression.CollectVariables(variables)
+			// The expression must refer the same number of variables the model's main
+			// expression refers.
+			if len(variables) != len(model.corollaries) {
+				return ErrCorollaryDoesNotReferExpectedVariables
+			}
+			// The expression must refer the model's main variable.
+			if _, ok := variables[model.mainVariable]; !ok {
+				return ErrCorollaryDoesNotReferExpectedVariables
+			}
+			// The expression must refer all the other variables (which are keys in the
+			// corollaries map) that are not the given one.
+			for innerVariable := range variables {
+				if innerVariable != variable {
+					if _, ok := model.corollaries[innerVariable]; !ok {
+						return ErrCorollaryDoesNotReferExpectedVariables
+					}
+				}
+			}
+		}
+		return nil
+	}
 }
 
 
