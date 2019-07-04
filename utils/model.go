@@ -103,12 +103,13 @@ func (model *Model) SetCorollary(variable Variable, expression Expression) error
 			// The expression must refer all the other variables (which are keys in the
 			// corollaries map) that are not the given one.
 			for innerVariable := range variables {
-				if innerVariable != variable {
+				if innerVariable != model.mainVariable {
 					if _, ok := model.corollaries[innerVariable]; !ok {
 						return ErrCorollaryDoesNotReferExpectedVariables
 					}
 				}
 			}
+			model.corollaries[variable] = expression
 		}
 		return nil
 	}
