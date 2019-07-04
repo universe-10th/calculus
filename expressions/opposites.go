@@ -124,9 +124,7 @@ func (inverse InverseExpr) Derivative(wrt Variable) (Expression, error) {
 	if derivative, err := inverse.arg.Derivative(wrt); err != nil {
 		return nil, err
 	} else {
-		variables := Variables{}
-		derivative.CollectVariables(variables)
-		if _, ok := variables[wrt]; !ok {
+		if constant, ok := derivative.(Constant); !ok && ops.IsZero(constant.number) {
 			return Num(0), nil
 		} else {
 			return Negated(Mul(derivative, Pow(inverse.arg, Num(-2)))).Simplify()
