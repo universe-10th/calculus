@@ -184,13 +184,14 @@ func (model *Model) getMissingVariable(args Arguments) (Variable, error) {
 // Evaluating a model implying (N+1) variables will involve specifying N arguments
 // which correspond to the variables and leaving exactly one variable out. The
 // returned value will correspond to that missing variable.
-func (model *Model) Evaluate(args Arguments, solver solvers.Solver) (sets.Number, error) {
+func (model *Model) Evaluate(args Arguments, solver solvers.Solver) (sets.Number, Variable, error) {
 	if variable, err := model.getMissingVariable(args); err != nil {
 		// WRONG: Exactly one variable must be missing.
-		return nil, err
+		return nil, Variable{}, err
 	} else if variable == model.mainVariable {
 		// Evaluate the main expression to compute the value for the main variable.
-		return model.mainExpression.Evaluate(args)
+		result, err := model.mainExpression.Evaluate(args)
+		return result, variable, err
 	} else if corollary := model.corollaries[variable]; corollary == nil {
 		// There is no corollary to evaluate. We will take the main expression
 		// and partially evaluate it with the given arguments (the main variable
@@ -203,16 +204,19 @@ func (model *Model) Evaluate(args Arguments, solver solvers.Solver) (sets.Number
 		// After getting the goal function, a solver must be present and it will
 		// be run to compute the result value.
 		if solver == nil {
-			return nil, ErrSolverNotGivenWhileNoCorollary
+			return nil, Variable{}, ErrSolverNotGivenWhileNoCorollary
 		} else if curried, err := model.mainExpression.Curry(args); err != nil {
-			return nil, err
+			return nil, Variable{}, err
 		} else if model.mainValue != nil {
-			return solver(GoalBasedExpression(curried, model.mainValue))
+			result, err := solver(GoalBasedExpression(curried, model.mainValue))
+			return result, variable, err
 		} else {
-			return solver(GoalBasedExpression(curried, args[model.mainVariable]))
+			result, err := solver(GoalBasedExpression(curried, args[model.mainVariable]))
+			return result, variable, err
 		}
-		return nil, nil
+		return nil, Variable{}, nil
 	} else {
-		return corollary.Evaluate(args)
+		result, err := corollary.Evaluate(args)
+		return result, variable, err
 	}
 }
