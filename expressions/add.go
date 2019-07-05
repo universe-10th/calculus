@@ -174,3 +174,9 @@ func flattenTerms(terms []Expression) []Expression {
 func Add(terms ...Expression) Expression {
 	return AddExpr{flattenTerms(terms)}
 }
+
+
+// Sub constructs a new subtracting addition node given their terms.
+func Sub(minuend Expression, subtrahends ...Expression) Expression {
+	return Add(minuend, Negated(Add(subtrahends...)))
+}

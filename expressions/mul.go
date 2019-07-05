@@ -214,3 +214,9 @@ func flattenFactors(factors []Expression) []Expression {
 func Mul(factors ...Expression) Expression {
 	return MulExpr{flattenFactors(factors)}
 }
+
+
+// Div constructs a new dividing multiplication node given their factors.
+func Div(dividend Expression, dividers ...Expression) Expression {
+	return Mul(dividend, Inverse(Mul(dividers...)))
+}
