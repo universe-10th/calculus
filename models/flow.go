@@ -16,8 +16,7 @@ type ModelFlowExpressions map[expressions.Variable]expressions.Expression
 // Expressions will run in an atomic-like fashion (resolution must be
 // considered atomic for the sake of this system).
 type ModelFlow struct {
-	input       expressions.Variables
-	output      expressions.Variables
+	cachedVars
 	expressions ModelFlowExpressions
 }
 
@@ -53,9 +52,11 @@ func NewFlow(flowExpressions ModelFlowExpressions) (*ModelFlow, error) {
 	}
 
 	return &ModelFlow{
-		input: inputVars,
+		cachedVars: cachedVars{
+			input: inputVars,
+			output: outputVars,
+		},
 		expressions: flowExpressions,
-		output: outputVars,
 	}, nil
 }
 
@@ -81,24 +82,4 @@ func (flow *ModelFlow) Compute(arguments expressions.Arguments) (expressions.Arg
 		}
 	}
 	return result, nil
-}
-
-
-// Returns a copy of the input vars set.
-func (flow *ModelFlow) Input() expressions.Variables {
-	input := expressions.Variables{}
-	for inputVar, _ := range flow.input {
-		input[inputVar] = true
-	}
-	return input
-}
-
-
-// Returns a copy of the output vars set.
-func (flow *ModelFlow) Output() expressions.Variables {
-	output := expressions.Variables{}
-	for outputVar, _ := range flow.input {
-		output[outputVar] = true
-	}
-	return output
 }
