@@ -45,17 +45,17 @@ func NewFlow(flowExpressions ModelFlowExpressions) (*ModelFlow, error) {
 		}
 	}
 
-	for outputVar, _ := range outputVars {
-		if _, ok := inputVars[outputVar]; ok {
-			return nil, ErrOutputVariableInsideFlowExpressions
-		}
+	cachedVars := cachedVars{
+		input: inputVars,
+		output: outputVars,
+	}
+
+	if !cachedVars.HasConsistentDomain() {
+		return nil, ErrOutputVariableInsideFlowExpressions
 	}
 
 	return &ModelFlow{
-		cachedVars: cachedVars{
-			input: inputVars,
-			output: outputVars,
-		},
+		cachedVars: cachedVars,
 		expressions: flowExpressions,
 	}, nil
 }
