@@ -23,7 +23,7 @@ type ModelFlow struct {
 
 var ErrNoFlowExpressionsGiven = errors.New("no flow expressions given (at least one is mandatory)")
 var ErrExpressionIsNil = errors.New("one or more expressions for this flow are nil")
-var ErrOutputVariableInsideFlowExpressions = errors.New("model flow's output variable is inside flow's expression")
+var ErrOutputVariableInsideFlowExpressions = errors.New("model flow's output variables are inside flow's expression")
 var ErrInsufficientArguments = errors.New("insufficient arguments for the model flow")
 
 
