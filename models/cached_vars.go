@@ -42,6 +42,12 @@ func (cached *cachedVars) hasConsistentDomain() bool {
 }
 
 
+// Returns the same object.
+func (cached *cachedVars) cachedVars() cachedVars {
+	return *cached
+}
+
+
 // merges a cachedVars set into another one.
 func (cached *cachedVars) merge(source cachedVars) {
 	for inputVar, _ := range source.input {
