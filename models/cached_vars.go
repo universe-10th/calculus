@@ -30,6 +30,18 @@ func (cached *cachedVars) Output() expressions.Variables {
 }
 
 
+// Tells whether a variable is contained among the input(s).
+func (cached *cachedVars) DefinesInput(variable expressions.Variable) bool {
+	return cached.input[variable]
+}
+
+
+// Tells whether a variable is contained among the output(s).
+func (cached *cachedVars) DefinesOutput(variable expressions.Variable) bool {
+	return cached.output[variable]
+}
+
+
 // Tells whether domain variables are present among the
 // co-domain as well. That case is a model inconsistency.
 func (cached *cachedVars) hasConsistentDomain() bool {

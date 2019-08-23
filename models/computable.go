@@ -12,6 +12,8 @@ type Computable interface {
 	cachedVars() cachedVars
 	Input() expressions.Variables
 	Output() expressions.Variables
+	DefinesInput(variable expressions.Variable) bool
+	DefinesOutput(variable expressions.Variable) bool
 }
 
 
