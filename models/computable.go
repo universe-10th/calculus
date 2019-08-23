@@ -1,6 +1,9 @@
 package models
 
-import "github.com/universe-10th/calculus/expressions"
+import (
+	"github.com/universe-10th/calculus/expressions"
+	"errors"
+)
 
 
 // This interface is intended for flows and flow chains.
@@ -10,3 +13,6 @@ type Computable interface {
 	Input() expressions.Variables
 	Output() expressions.Variables
 }
+
+
+var ErrComputableIsNil = errors.New("a given computable is nil")
