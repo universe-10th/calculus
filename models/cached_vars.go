@@ -32,7 +32,7 @@ func (cached *cachedVars) Output() expressions.Variables {
 
 // Tells whether domain variables are present among the
 // co-domain as well. That case is a model inconsistency.
-func (cached *cachedVars) HasConsistentDomain() bool {
+func (cached *cachedVars) hasConsistentDomain() bool {
 	for outputVar, _ := range cached.output {
 		if _, ok := cached.input[outputVar]; ok {
 			return false
@@ -42,20 +42,12 @@ func (cached *cachedVars) HasConsistentDomain() bool {
 }
 
 
-// Merges several given instances of cachedVars into one.
-func mergeCachedVars(elements ...cachedVars) cachedVars {
-	input := expressions.Variables{}
-	output := expressions.Variables{}
-	for _, element := range elements {
-		for inputVar, _ := range element.input {
-			input[inputVar] = true
-		}
-		for outputVar := range element.output {
-			output[outputVar] = true
-		}
+// merges a cachedVars set into another one.
+func (cached *cachedVars) merge(source cachedVars) {
+	for inputVar, _ := range source.input {
+		cached.input[inputVar] = true
 	}
-	return cachedVars{
-		input,
-		output,
+	for outputVar := range source.output {
+		cached.output[outputVar] = true
 	}
 }

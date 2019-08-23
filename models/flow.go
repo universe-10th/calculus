@@ -50,7 +50,7 @@ func NewFlow(flowExpressions ModelFlowExpressions) (*ModelFlow, error) {
 		output: outputVars,
 	}
 
-	if !cachedVars.HasConsistentDomain() {
+	if !cachedVars.hasConsistentDomain() {
 		return nil, ErrOutputVariableInsideFlowExpressions
 	}
 
