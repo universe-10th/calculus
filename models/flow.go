@@ -17,6 +17,7 @@ type ModelFlowExpressions map[expressions.Variable]expressions.Expression
 // considered atomic for the sake of this system).
 type ModelFlow struct {
 	input       expressions.Variables
+	output      expressions.Variables
 	expressions ModelFlowExpressions
 }
 
@@ -33,8 +34,8 @@ func NewFlow(flowExpressions ModelFlowExpressions) (*ModelFlow, error) {
 		return nil, ErrNoFlowExpressionsGiven
 	}
 
-	var inputVars = expressions.Variables{}
-	var outputVars = expressions.Variables{}
+	inputVars := expressions.Variables{}
+	outputVars := expressions.Variables{}
 
 	for outputVar, expression := range flowExpressions {
 		if expression == nil {
@@ -54,6 +55,7 @@ func NewFlow(flowExpressions ModelFlowExpressions) (*ModelFlow, error) {
 	return &ModelFlow{
 		input: inputVars,
 		expressions: flowExpressions,
+		output: outputVars,
 	}, nil
 }
 
@@ -70,7 +72,7 @@ func (flow *ModelFlow) Compute(arguments expressions.Arguments) (expressions.Arg
 		}
 	}
 
-	var result = expressions.Arguments{}
+	result := expressions.Arguments{}
 	for outputVar, expression := range flow.expressions {
 		if value, err := expression.Evaluate(arguments); err != nil {
 			return nil, err
@@ -79,4 +81,24 @@ func (flow *ModelFlow) Compute(arguments expressions.Arguments) (expressions.Arg
 		}
 	}
 	return result, nil
+}
+
+
+// Returns a copy of the input vars set.
+func (flow *ModelFlow) Input() expressions.Variables {
+	input := expressions.Variables{}
+	for inputVar, _ := range flow.input {
+		input[inputVar] = true
+	}
+	return input
+}
+
+
+// Returns a copy of the output vars set.
+func (flow *ModelFlow) Output() expressions.Variables {
+	output := expressions.Variables{}
+	for outputVar, _ := range flow.input {
+		output[outputVar] = true
+	}
+	return output
 }
