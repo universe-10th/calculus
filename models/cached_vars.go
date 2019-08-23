@@ -28,3 +28,22 @@ func (cached *cachedVars) Output() expressions.Variables {
 	}
 	return output
 }
+
+
+// Merges several given instances of cachedVars into one.
+func mergeCachedVars(elements ...cachedVars) cachedVars {
+	input := expressions.Variables{}
+	output := expressions.Variables{}
+	for _, element := range elements {
+		for inputVar, _ := range element.input {
+			input[inputVar] = true
+		}
+		for outputVar := range element.output {
+			output[outputVar] = true
+		}
+	}
+	return cachedVars{
+		input,
+		output,
+	}
+}
