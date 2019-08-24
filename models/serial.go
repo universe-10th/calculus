@@ -13,29 +13,29 @@ import (
 // input requirements of the (n+1)th element. The output of
 // the last element will become the output of the whole
 // computation.
-type SerialComputable struct {
+type SerialModelFlow struct {
 	cachedVars
-	elements []Computable
+	elements []ModelFlow
 }
 
 
-var ErrNoSerialComputablesGiven = errors.New("no serial computables given")
-var ErrOutputToInputChainNotSatisfied = errors.New("there is at least one step where the output from it does not satisfy the input of the next")
+var ErrNoSerialModelFlowsGiven = errors.New("no serial model flows given")
+var ErrOutputToInputChainNotSatisfied = errors.New("there is at least one step model flow where the output from it does not satisfy the input of the next")
 
 
-// Creates a chained computable given all the elements.
-func NewSerialComputable(elements ...Computable) (*SerialComputable, error) {
+// Creates a chained model flow given all the elements.
+func NewSerialModelFlow(elements ...ModelFlow) (*SerialModelFlow, error) {
 	length := len(elements)
 	if length == 0 {
-		return nil, ErrNoSerialComputablesGiven
+		return nil, ErrNoSerialModelFlowsGiven
 	}
 	if elements[0] == nil {
-		return nil, ErrComputableIsNil
+		return nil, ErrModelFlowIsNil
 	}
 	for index, element := range elements[0:length - 1] {
 		nextElement := elements[index + 1]
 		if nextElement == nil {
-			return nil, ErrComputableIsNil
+			return nil, ErrModelFlowIsNil
 		} else {
 			currentOutput := element.Output()
 			nextInput := nextElement.Input()
@@ -46,7 +46,7 @@ func NewSerialComputable(elements ...Computable) (*SerialComputable, error) {
 			}
 		}
 	}
-	return &SerialComputable{
+	return &SerialModelFlow{
 		cachedVars{
 			input: elements[0].Input(),
 			output: elements[length - 1].Output(),
@@ -57,10 +57,10 @@ func NewSerialComputable(elements ...Computable) (*SerialComputable, error) {
 
 
 // Computes the models in serial order, and returns the results of the last step.
-func (serialComputable *SerialComputable) Compute(arguments expressions.Arguments) (expressions.Arguments, error) {
+func (serialModelFlow *SerialModelFlow) Compute(arguments expressions.Arguments) (expressions.Arguments, error) {
 	result := arguments
 	var err error
-	for _, element := range serialComputable.elements {
+	for _, element := range serialModelFlow.elements {
 		if result, err = element.Compute(result); err != nil {
 			return nil, err
 		}

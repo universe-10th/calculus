@@ -6,30 +6,30 @@ import (
 )
 
 
-// This computation must be considered a parallel computation
+// This model flow must be considered a parallel computation
 // of several different model flows, atomically. The computation
 // input must satisfy the first element's input requirements.
 // The computations must share input variables at most, but must
 // not share any output variable.
-type ParallelComputable struct {
+type ParallelModelFlow struct {
 	cachedVars
-	elements []Computable
+	elements []ModelFlow
 }
 
 
-var ErrNoParallelComputablesGiven = errors.New("no parallel computables given")
-var ErrSomeModelOutputsBelongToOtherModelInputs = errors.New("some output variables in one computable belong to input variables of other computable")
-var ErrOutputVariableMergedTwice = errors.New("an output variable from one input computable clashes with an output variable in other computable(s)")
+var ErrNoParallelModelFlowsGiven = errors.New("no parallel model flows given")
+var ErrSomeModelOutputsBelongToOtherModelInputs = errors.New("some output variables in one model flow belong to input variables of other model flow(s)")
+var ErrOutputVariableMergedTwice = errors.New("an output variable from one input model flow clashes with an output variable in other model flow(s)")
 
-// Creates a parallel computable given all the elements.
-func NewParallelComputable(elements ...Computable) (*ParallelComputable, error) {
+// Creates a parallel model flow given all the elements.
+func NewParallelModelFlow(elements ...ModelFlow) (*ParallelModelFlow, error) {
 	if len(elements) == 0 {
-		return nil, ErrNoParallelComputablesGiven
+		return nil, ErrNoParallelModelFlowsGiven
 	}
 	cachedVars := cachedVars{}
 	for _, element := range elements {
 		if element == nil {
-			return nil, ErrComputableIsNil
+			return nil, ErrModelFlowIsNil
 		}
 		for outputVar, _ := range element.Output() {
 			if cachedVars.DefinesOutput(outputVar) {
@@ -42,7 +42,7 @@ func NewParallelComputable(elements ...Computable) (*ParallelComputable, error) 
 	if !cachedVars.hasConsistentDomain() {
 		return nil, ErrSomeModelOutputsBelongToOtherModelInputs
 	}
-	return &ParallelComputable{
+	return &ParallelModelFlow{
 		cachedVars,
 		elements,
 	}, nil
@@ -50,9 +50,9 @@ func NewParallelComputable(elements ...Computable) (*ParallelComputable, error) 
 
 
 // Computes the models in parallel, and returns all the results.
-func (parallelComputable *ParallelComputable) Compute(arguments expressions.Arguments) (expressions.Arguments, error) {
+func (parallelModelFlow *ParallelModelFlow) Compute(arguments expressions.Arguments) (expressions.Arguments, error) {
 	result := expressions.Arguments{}
-	for _, element := range parallelComputable.elements {
+	for _, element := range parallelModelFlow.elements {
 		if subResult, err := element.Compute(arguments); err != nil {
 			return nil, err
 		} else {
