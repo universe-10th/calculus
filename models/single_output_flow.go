@@ -6,10 +6,10 @@ import (
 )
 
 
-// A model flow involves one single model expression over some input
+// A model flow involving one single model expression over some input
 // variables, and to some other output variable (output variable must
 // not be also present among input variables.
-type SingleModelFlow struct {
+type SingleOutputModelFlow struct {
 	cachedVars
 	output expressions.Variable
 	expression expressions.Expression
@@ -22,7 +22,7 @@ var ErrInsufficientArguments = errors.New("insufficient arguments for the model 
 
 
 // Creates the flow given all the expression.
-func NewFlow(output expressions.Variable, expression expressions.Expression) (*SingleModelFlow, error) {
+func NewFlow(output expressions.Variable, expression expressions.Expression) (*SingleOutputModelFlow, error) {
 	inputVars := expressions.Variables{}
 	outputVars := expressions.Variables{output: true}
 
@@ -41,7 +41,7 @@ func NewFlow(output expressions.Variable, expression expressions.Expression) (*S
 		return nil, ErrOutputVariableInsideFlowExpression
 	}
 
-	return &SingleModelFlow{
+	return &SingleOutputModelFlow{
 		cachedVars: cachedVars,
 		expression: expression,
 	}, nil
@@ -52,7 +52,7 @@ func NewFlow(output expressions.Variable, expression expressions.Expression) (*S
 //
 // If at least one of the required arguments is not present, the flow will fail.
 // It at least one of the flow expressions returns an error, the whole flow will fail.
-func (flow *SingleModelFlow) Evaluate(arguments expressions.Arguments) (expressions.Arguments, error) {
+func (flow *SingleOutputModelFlow) Evaluate(arguments expressions.Arguments) (expressions.Arguments, error) {
 	for key, _ := range flow.input {
 		if _, ok := arguments[key]; !ok {
 			// Required input is not present.
