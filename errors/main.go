@@ -11,3 +11,4 @@ var InvalidFactorialArgument = errors.New("argument to factorial does not fit in
 // For derivative
 var NotDerivableExpression   = errors.New("this expression is not derivable")
 var UndefinedOnInteger       = errors.New("this expression is undefined on integer values")
+var InfiniteCannotBeRounded  = errors.New("infinite numbers cannot be rounded")

@@ -22,7 +22,7 @@ const (
 func roundFloat(float *big.Float, roundType RoundType) *big.Int {
 	roundedToZero, _ := float.Int(big.NewInt(0))
 	if roundedToZero == nil {
-		panic("Cannot round an infinite number")
+		return nil
 	}
 	switch roundType {
 	case Ceil:
@@ -80,7 +80,11 @@ func Round(number sets.Number, roundType RoundType) *big.Int {
 // from the original number. Frac(big.NewFloat(1.35)) will be 0.35,
 // and Frac(big.NewFloat(-1.35)) will be -0.35.
 func Frac(number sets.Number) sets.Number {
-	return Sub(number, Round(number, Inward))
+	if rounded := Round(number, Inward); rounded == nil {
+		return nil
+	} else {
+		return Sub(number, Round(number, Inward))
+	}
 }
 
 
