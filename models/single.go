@@ -52,7 +52,7 @@ func NewFlow(output expressions.Variable, expression expressions.Expression) (*S
 //
 // If at least one of the required arguments is not present, the flow will fail.
 // It at least one of the flow expressions returns an error, the whole flow will fail.
-func (flow *SingleModelFlow) Compute(arguments expressions.Arguments) (expressions.Arguments, error) {
+func (flow *SingleModelFlow) Evaluate(arguments expressions.Arguments) (expressions.Arguments, error) {
 	for key, _ := range flow.input {
 		if _, ok := arguments[key]; !ok {
 			// Required input is not present.

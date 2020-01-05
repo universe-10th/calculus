@@ -8,7 +8,7 @@ import (
 
 // This interface is intended for flows and flow chains.
 type ModelFlow interface {
-	Compute(arguments expressions.Arguments) (expressions.Arguments, error)
+	Evaluate(arguments expressions.Arguments) (expressions.Arguments, error)
 	cachedVars() cachedVars
 	Input() expressions.Variables
 	Output() expressions.Variables

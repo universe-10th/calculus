@@ -50,10 +50,10 @@ func NewParallelModelFlow(elements ...ModelFlow) (*ParallelModelFlow, error) {
 
 
 // Computes the models in parallel, and returns all the results.
-func (parallelModelFlow *ParallelModelFlow) Compute(arguments expressions.Arguments) (expressions.Arguments, error) {
+func (parallelModelFlow *ParallelModelFlow) Evaluate(arguments expressions.Arguments) (expressions.Arguments, error) {
 	result := expressions.Arguments{}
 	for _, element := range parallelModelFlow.elements {
-		if subResult, err := element.Compute(arguments); err != nil {
+		if subResult, err := element.Evaluate(arguments); err != nil {
 			return nil, err
 		} else {
 			for key, value := range subResult {

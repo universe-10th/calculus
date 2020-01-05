@@ -57,11 +57,11 @@ func NewSerialModelFlow(elements ...ModelFlow) (*SerialModelFlow, error) {
 
 
 // Computes the models in serial order, and returns the results of the last step.
-func (serialModelFlow *SerialModelFlow) Compute(arguments expressions.Arguments) (expressions.Arguments, error) {
+func (serialModelFlow *SerialModelFlow) Evaluate(arguments expressions.Arguments) (expressions.Arguments, error) {
 	result := arguments
 	var err error
 	for _, element := range serialModelFlow.elements {
-		if result, err = element.Compute(result); err != nil {
+		if result, err = element.Evaluate(result); err != nil {
 			return nil, err
 		}
 	}
