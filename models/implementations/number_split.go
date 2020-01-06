@@ -4,6 +4,7 @@ import (
 	"github.com/universe-10th/calculus/models"
 	"github.com/universe-10th/calculus/expressions"
 	"github.com/universe-10th/calculus/ops"
+	"github.com/universe-10th/calculus/errors"
 )
 
 
@@ -27,9 +28,12 @@ func NewNumberSplitModelFlow(input, intOutput, fracOutput expressions.Variable) 
 
 
 func (numberSplitModelFlow NumberSplitModelFlow) Evaluate(arguments expressions.Arguments) (expressions.Arguments, error) {
-	intPart, fracPart := ops.Split(arguments[numberSplitModelFlow.input])
-	return expressions.Arguments{
-		numberSplitModelFlow.intOutput: intPart,
-		numberSplitModelFlow.fracOutput: fracPart,
-	}, nil
+	if intPart, fracPart := ops.Split(arguments[numberSplitModelFlow.input]); intPart == nil {
+		return nil, errors.InfiniteCannotBeRounded
+	} else {
+		return expressions.Arguments{
+			numberSplitModelFlow.intOutput: intPart,
+			numberSplitModelFlow.fracOutput: fracPart,
+		}, nil
+	}
 }
