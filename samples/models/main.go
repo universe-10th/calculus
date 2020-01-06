@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/universe-10th/calculus/solvers"
 	"math/big"
-	"github.com/universe-10th/calculus/solvers/support"
 )
 
 
@@ -34,7 +33,7 @@ func main() {
 		X: 1, Y: 2, Z: 3,
 	}.Wrap(), nil)
 	fmt.Printf("Return after evaluating W=Model^-1(X: 1, Y: 2, Z: 3): %v=%v %v\n", variable, result, err)
-	nrSolver := solvers.MakeNewtonRaphsonSolver(big.NewFloat(0).SetInt64(1000000), support.Epsilon(7), 100, 100)
+	nrSolver := solvers.MakeNewtonRaphsonSolver(big.NewFloat(0).SetInt64(1000000), utils.Epsilon(7), 100, 100)
 	result, variable, err = model.Evaluate(Arguments{
 		W: 1, Y: 2, Z: 3,
 	}.Wrap(), nrSolver)
