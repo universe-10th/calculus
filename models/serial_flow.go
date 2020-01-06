@@ -1,8 +1,8 @@
 package models
 
 import (
-	"errors"
 	"github.com/universe-10th/calculus/expressions"
+	"github.com/universe-10th/calculus/models/errors"
 )
 
 
@@ -19,29 +19,25 @@ type SerialModelFlow struct {
 }
 
 
-var ErrNoSerialModelFlowsGiven = errors.New("no serial model flows given")
-var ErrOutputToInputChainNotSatisfied = errors.New("there is at least one step model flow where the output from it does not satisfy the input of the next")
-
-
 // Creates a chained model flow given all the elements.
 func NewSerialModelFlow(elements ...ModelFlow) (*SerialModelFlow, error) {
 	length := len(elements)
 	if length == 0 {
-		return nil, ErrNoSerialModelFlowsGiven
+		return nil, errors.ErrNoSerialModelFlowsGiven
 	}
 	if elements[0] == nil {
-		return nil, ErrModelFlowIsNil
+		return nil, errors.ErrModelFlowIsNil
 	}
 	for index, element := range elements[0:length - 1] {
 		nextElement := elements[index + 1]
 		if nextElement == nil {
-			return nil, ErrModelFlowIsNil
+			return nil, errors.ErrModelFlowIsNil
 		} else {
 			currentOutput := element.Output()
 			nextInput := nextElement.Input()
 			for inputVar, _ := range nextInput {
 				if _, ok := currentOutput[inputVar]; !ok {
-					return nil, ErrOutputToInputChainNotSatisfied
+					return nil, errors.ErrOutputToInputChainNotSatisfied
 				}
 			}
 		}

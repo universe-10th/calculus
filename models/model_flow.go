@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/universe-10th/calculus/expressions"
-	"errors"
 )
 
 
@@ -15,6 +14,3 @@ type ModelFlow interface {
 	DefinesInput(variable expressions.Variable) bool
 	DefinesOutput(variable expressions.Variable) bool
 }
-
-
-var ErrModelFlowIsNil = errors.New("a given model flow is nil")

@@ -2,7 +2,7 @@ package models
 
 import (
 	"github.com/universe-10th/calculus/expressions"
-	"errors"
+	"github.com/universe-10th/calculus/models/errors"
 )
 
 
@@ -16,18 +16,13 @@ type SingleOutputModelFlow struct {
 }
 
 
-var ErrExpressionIsNil = errors.New("one or more expressions for this flow are nil")
-var ErrOutputVariableInsideFlowExpression = errors.New("model flow's output variable is inside flow's expression")
-var ErrInsufficientArguments = errors.New("insufficient arguments for the model flow")
-
-
 // Creates the flow given all the expression.
 func NewFlow(output expressions.Variable, expression expressions.Expression) (*SingleOutputModelFlow, error) {
 	inputVars := expressions.Variables{}
 	outputVars := expressions.Variables{output: true}
 
 	if expression == nil {
-		return nil, ErrExpressionIsNil
+		return nil, errors.ErrExpressionIsNil
 	} else {
 		expression.CollectVariables(inputVars)
 	}
@@ -38,7 +33,7 @@ func NewFlow(output expressions.Variable, expression expressions.Expression) (*S
 	}
 
 	if !cachedVars.hasConsistentDomain() {
-		return nil, ErrOutputVariableInsideFlowExpression
+		return nil, errors.ErrOutputVariableInsideFlowExpression
 	}
 
 	return &SingleOutputModelFlow{
@@ -56,7 +51,7 @@ func (flow *SingleOutputModelFlow) Evaluate(arguments expressions.Arguments) (ex
 	for key, _ := range flow.input {
 		if _, ok := arguments[key]; !ok {
 			// Required input is not present.
-			return nil, ErrInsufficientArguments
+			return nil, errors.ErrInsufficientArguments
 		}
 	}
 

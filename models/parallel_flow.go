@@ -1,8 +1,8 @@
 package models
 
 import (
-	"errors"
 	"github.com/universe-10th/calculus/expressions"
+	"github.com/universe-10th/calculus/models/errors"
 )
 
 
@@ -17,30 +17,26 @@ type ParallelModelFlow struct {
 }
 
 
-var ErrNoParallelModelFlowsGiven = errors.New("no parallel model flows given")
-var ErrSomeModelOutputsBelongToOtherModelInputs = errors.New("some output variables in one model flow belong to input variables of other model flow(s)")
-var ErrOutputVariableMergedTwice = errors.New("an output variable from one input model flow clashes with an output variable in other model flow(s)")
-
 // Creates a parallel model flow given all the elements.
 func NewParallelModelFlow(elements ...ModelFlow) (*ParallelModelFlow, error) {
 	if len(elements) == 0 {
-		return nil, ErrNoParallelModelFlowsGiven
+		return nil, errors.ErrNoParallelModelFlowsGiven
 	}
 	cachedVars := cachedVars{}
 	for _, element := range elements {
 		if element == nil {
-			return nil, ErrModelFlowIsNil
+			return nil, errors.ErrModelFlowIsNil
 		}
 		for outputVar, _ := range element.Output() {
 			if cachedVars.DefinesOutput(outputVar) {
-				return nil, ErrOutputVariableMergedTwice
+				return nil, errors.ErrOutputVariableMergedTwice
 			}
 		}
 		elementCachedVars := element.cachedVars()
 		cachedVars.merge(elementCachedVars)
 	}
 	if !cachedVars.hasConsistentDomain() {
-		return nil, ErrSomeModelOutputsBelongToOtherModelInputs
+		return nil, errors.ErrSomeModelOutputsBelongToOtherModelInputs
 	}
 	return &ParallelModelFlow{
 		cachedVars,
