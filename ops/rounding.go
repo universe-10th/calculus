@@ -95,6 +95,9 @@ func Frac(number sets.Number) sets.Number {
 // Note: This function will never be used in Expression classes, at
 // least while we don't support multivalued expressions.
 func Split(number sets.Number) (sets.Number, sets.Number) {
-	rounded := Round(number, Inward)
-	return rounded, Sub(number, rounded)
+	if rounded := Round(number, Inward); rounded != nil {
+		return rounded, Sub(number, rounded)
+	} else {
+		return nil, nil
+	}
 }
