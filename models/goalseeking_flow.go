@@ -15,7 +15,7 @@ import (
 // expression is already curried, with only one variable
 // left.
 type GoalSeekingAlgorithm interface {
-	FindRoot(curriedExpression expressions.Expression, variable expressions.Variable) (sets.Number, error)
+	FindRoot(goalBasedExpression expressions.Expression, variable expressions.Variable) (sets.Number, error)
 }
 
 
