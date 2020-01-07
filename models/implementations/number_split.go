@@ -16,13 +16,14 @@ type NumberSplitModelFlow struct {
 }
 
 
-func NewNumberSplitModelFlow(input, intOutput, fracOutput expressions.Variable) *NumberSplitModelFlow {
-	return &NumberSplitModelFlow{
-		*models.NewCustomModelFlow(
-			expressions.Variables{input: true},
-			expressions.Variables{intOutput: true, fracOutput: true},
-		),
-		input, intOutput, fracOutput,
+func NewNumberSplitModelFlow(input, intOutput, fracOutput expressions.Variable) (*NumberSplitModelFlow, error) {
+	if custom, err := models.NewCustomModelFlow(
+		expressions.Variables{input: true},
+		expressions.Variables{intOutput: true, fracOutput: true},
+	); err != nil {
+		return nil, err
+	} else {
+		return &NumberSplitModelFlow{*custom, input, intOutput, fracOutput}, nil
 	}
 }
 
