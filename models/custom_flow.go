@@ -15,8 +15,8 @@ type CustomModelFlow struct {
 // Creates a base instance for a custom model flow.
 // The result of this function will be used as a component
 // for a derived-class instance.
-func NewCustomModelFlow(inputVars, outputVars expressions.Variables) CustomModelFlow {
-	return CustomModelFlow{cachedVars{inputVars, outputVars}}
+func NewCustomModelFlow(inputVars, outputVars expressions.Variables) *CustomModelFlow {
+	return &CustomModelFlow{cachedVars{inputVars, outputVars}}
 }
 
 

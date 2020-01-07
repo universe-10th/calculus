@@ -16,9 +16,9 @@ type NumberSplitModelFlow struct {
 }
 
 
-func NewNumberSplitModelFlow(input, intOutput, fracOutput expressions.Variable) NumberSplitModelFlow {
-	return NumberSplitModelFlow{
-		models.NewCustomModelFlow(
+func NewNumberSplitModelFlow(input, intOutput, fracOutput expressions.Variable) *NumberSplitModelFlow {
+	return &NumberSplitModelFlow{
+		*models.NewCustomModelFlow(
 			expressions.Variables{input: true},
 			expressions.Variables{intOutput: true, fracOutput: true},
 		),
@@ -27,7 +27,7 @@ func NewNumberSplitModelFlow(input, intOutput, fracOutput expressions.Variable) 
 }
 
 
-func (numberSplitModelFlow NumberSplitModelFlow) Evaluate(arguments expressions.Arguments) (expressions.Arguments, error) {
+func (numberSplitModelFlow *NumberSplitModelFlow) Evaluate(arguments expressions.Arguments) (expressions.Arguments, error) {
 	if intPart, fracPart := ops.Split(arguments[numberSplitModelFlow.input]); intPart == nil {
 		return nil, errors.InfiniteCannotBeRounded
 	} else {
