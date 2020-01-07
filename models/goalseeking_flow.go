@@ -15,7 +15,7 @@ import (
 // expression is already curried, with only one variable
 // left.
 type GoalSeekingAlgorithm interface {
-	FindRoot(goalBasedExpression expressions.Expression, variable expressions.Variable) (sets.Number, error)
+	FindRoot(goalBasedExpression expressions.Expression) (sets.Number, error)
 }
 
 
@@ -144,7 +144,7 @@ func (goalSeekingModelFlow *GoalSeekingModelFlow) Evaluate(arguments expressions
 
 				// 4. Now, tell the engine to run the algorithm given the goal-based
 				// expression and the inverted variable.
-				if result, err := engine.FindRoot(goalBased, inverted); err != nil {
+				if result, err := engine.FindRoot(goalBased); err != nil {
 					return nil, err
 				} else {
 					return expressions.Arguments{inverted: result}, nil
