@@ -68,7 +68,7 @@ type GoalSeekingModelFlow struct {
 // flows, but it can safely be used directly (although more
 // verbose than using custom constructors).
 func NewGoalSeekingModelFlow(expression expressions.Expression, coDomain, invertedVariable expressions.Variable,
-	                            factory GoalSeekingAlgorithmFactory) (*GoalSeekingModelFlow, error) {
+	                         factory GoalSeekingAlgorithmFactory) (*GoalSeekingModelFlow, error) {
 	inputVars := expressions.Variables{}
 	outputVars := expressions.Variables{invertedVariable: true}
 
