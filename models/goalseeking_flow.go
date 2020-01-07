@@ -4,6 +4,7 @@ import (
 	"github.com/universe-10th/calculus/expressions"
 	"github.com/universe-10th/calculus/sets"
 	"github.com/universe-10th/calculus/models/errors"
+	"github.com/universe-10th/calculus/utils"
 )
 
 
@@ -126,19 +127,28 @@ func (goalSeekingModelFlow *GoalSeekingModelFlow) Evaluate(arguments expressions
 		if curried, err := goalSeekingModelFlow.expression.Curry(arguments); err != nil {
 			return nil, err
 		} else {
-			// Check the only free variable is the inverted.
-			variables := expressions.Variables{}
-			curried.CollectVariables(variables)
-			if _, ok := variables[inverted]; !ok || len(variables) != 1 {
+			// 3. Turn it into a goal-based expression. For this to work,
+			// a value must be set, among the arguments, for the co-domain
+			// variable
+			if goal, ok := arguments[coDomain]; !ok {
 				return nil, errors.ErrInsufficientArguments
-			}
-
-			// 3. Now, tell the engine to run the algorithm given the curried
-			// expression and the inverted variable
-			if result, err := engine.FindRoot(curried, inverted); err != nil {
-				return nil, err
 			} else {
-				return expressions.Arguments{inverted: result}, nil
+				goalBased := utils.GoalBasedExpression(curried, goal)
+
+				// Check the only free variable is the inverted.
+				variables := expressions.Variables{}
+				goalBased.CollectVariables(variables)
+				if _, ok := variables[inverted]; !ok || len(variables) != 1 {
+					return nil, errors.ErrInsufficientArguments
+				}
+
+				// 4. Now, tell the engine to run the algorithm given the goal-based
+				// expression and the inverted variable.
+				if result, err := engine.FindRoot(goalBased, inverted); err != nil {
+					return nil, err
+				} else {
+					return expressions.Arguments{inverted: result}, nil
+				}
 			}
 		}
 	}
