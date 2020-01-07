@@ -7,13 +7,13 @@ import (
 )
 
 
-// Goal-seeker algorithm engines will have only one method
+// Goal-seeking algorithm engines will have only one method
 // to care about: evaluating an expression to find their
 // root (only one root is supported here - algorithms should
 // choose wisely or allow the user to choose the root). The
 // expression is already curried, with only one variable
 // left.
-type GoalSeekerAlgorithm interface {
+type GoalSeekingAlgorithm interface {
 	FindRoot(curriedExpression expressions.Expression, variable expressions.Variable) (sets.Number, error)
 }
 
@@ -21,13 +21,13 @@ type GoalSeekerAlgorithm interface {
 // Engine factories take some arguments (related to the
 // intended evaluation and variables) and return an instance
 // of goal-seeking algorithm.
-type GoalSeekerAlgorithmFactory func(
+type GoalSeekingAlgorithmFactory func(
 	arguments expressions.Arguments, coDomain,
 	inverted expressions.Variable, fullDomain expressions.Variables,
-) (GoalSeekerAlgorithm, error)
+) (GoalSeekingAlgorithm, error)
 
 
-// Goal-seeker models are quite like Single Output
+// Goal-seeking models are quite like Single Output
 // flows, but instead of using an expression and
 // being interested in the traditional result of
 // it on evaluation (the direct evaluation output),
@@ -49,25 +49,25 @@ type GoalSeekerAlgorithmFactory func(
 // This class is abstract: it must be inherited since the
 // underlying algorithm engine instantiation must be
 // implemented.
-type GoalSeekerModelFlow struct {
+type GoalSeekingModelFlow struct {
 	CustomModelFlow
 	expression expressions.Expression
 	coDomainVariable expressions.Variable
 	invertedVariable expressions.Variable
-	factory GoalSeekerAlgorithmFactory
+	factory GoalSeekingAlgorithmFactory
 }
 
 
 // Given an expression to evaluate, the co-domain variable for
 // the expression, and the variable to invert (root-find their
-// value) creates an abstract Goal-seeker model flow. Additionally,
+// value) creates an abstract Goal-seeking model flow. Additionally,
 // the algorithm factory function is also needed. This said, this
 // function should be used as part of construction of other
-// (specific, totally or partially implemented) goal-seeker model
+// (specific, totally or partially implemented) goal-seeking model
 // flows, but it can safely be used directly (although more
 // verbose than using custom constructors).
-func NewGoalSeekerModelFlow(expression expressions.Expression, coDomain, invertedVariable expressions.Variable,
-	                            factory GoalSeekerAlgorithmFactory) (*GoalSeekerModelFlow, error) {
+func NewGoalSeekingModelFlow(expression expressions.Expression, coDomain, invertedVariable expressions.Variable,
+	                            factory GoalSeekingAlgorithmFactory) (*GoalSeekingModelFlow, error) {
 	inputVars := expressions.Variables{}
 	outputVars := expressions.Variables{invertedVariable: true}
 
@@ -86,7 +86,7 @@ func NewGoalSeekerModelFlow(expression expressions.Expression, coDomain, inverte
 	if custom, err := NewCustomModelFlow(inputVars, outputVars); err != nil {
 		return nil, err
 	} else {
-		return &GoalSeekerModelFlow{
+		return &GoalSeekingModelFlow{
 			*custom, expression,
 			coDomain, invertedVariable,
 			factory,
@@ -96,10 +96,10 @@ func NewGoalSeekerModelFlow(expression expressions.Expression, coDomain, inverte
 
 
 // Gets all the arguments, but the inverted one.
-func (goalSeekerModelFlow GoalSeekerModelFlow) getNonInvertedArguments(arguments expressions.Arguments) expressions.Arguments {
+func (goalSeekingModelFlow GoalSeekingModelFlow) getNonInvertedArguments(arguments expressions.Arguments) expressions.Arguments {
 	argumentsCopy := expressions.Arguments{}
 	for key, value := range arguments {
-		if key != goalSeekerModelFlow.coDomainVariable {
+		if key != goalSeekingModelFlow.coDomainVariable {
 			argumentsCopy[key] = value
 		}
 	}
@@ -111,19 +111,19 @@ func (goalSeekerModelFlow GoalSeekerModelFlow) getNonInvertedArguments(arguments
 // one (and the co-domain value). Then, it curries such expression with all the
 // input values except for the inverted value. Finally, with only one variable
 // left (the inverted one), it tries the root-finding algorithm.
-func (goalSeekerModelFlow *GoalSeekerModelFlow) Evaluate(arguments expressions.Arguments) (expressions.Arguments, error) {
-	fullDomain := goalSeekerModelFlow.Input()
-	coDomain := goalSeekerModelFlow.coDomainVariable
-	inverted := goalSeekerModelFlow.invertedVariable
-	if engine, err := goalSeekerModelFlow.factory(arguments, coDomain, inverted, fullDomain); err != nil {
+func (goalSeekingModelFlow *GoalSeekingModelFlow) Evaluate(arguments expressions.Arguments) (expressions.Arguments, error) {
+	fullDomain := goalSeekingModelFlow.Input()
+	coDomain := goalSeekingModelFlow.coDomainVariable
+	inverted := goalSeekingModelFlow.invertedVariable
+	if engine, err := goalSeekingModelFlow.factory(arguments, coDomain, inverted, fullDomain); err != nil {
 		return nil, err
 	} else {
 		// 1. Keep only non-inverted arguments.
-		arguments = goalSeekerModelFlow.getNonInvertedArguments(arguments)
+		arguments = goalSeekingModelFlow.getNonInvertedArguments(arguments)
 		// 2. Curry the expression given the arguments. The remaining
 		// expression must have exactly one free variable, corresponding
 		// to the inverted variable.
-		if curried, err := goalSeekerModelFlow.expression.Curry(arguments); err != nil {
+		if curried, err := goalSeekingModelFlow.expression.Curry(arguments); err != nil {
 			return nil, err
 		} else {
 			// Check the only free variable is the inverted.
