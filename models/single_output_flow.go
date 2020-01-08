@@ -39,6 +39,7 @@ func NewSingleOutputFlow(output expressions.Variable, expression expressions.Exp
 	return &SingleOutputModelFlow{
 		cachedVars: cachedVars,
 		expression: expression,
+		output: output,
 	}, nil
 }
 
