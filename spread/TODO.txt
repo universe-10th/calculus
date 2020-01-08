@@ -1,0 +1,3 @@
+A feature similar to Excel spreadsheets, but headless. In pure code.
+
+The idea is to do the exact same, so other packages can use the spreadsheets with model and/or flows.
