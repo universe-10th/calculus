@@ -17,7 +17,7 @@ type SingleOutputModelFlow struct {
 
 
 // Creates the flow given all the expression.
-func NewSingleOutputFlow(output expressions.Variable, expression expressions.Expression) (*SingleOutputModelFlow, error) {
+func NewSingleOutputModelFlow(output expressions.Variable, expression expressions.Expression) (*SingleOutputModelFlow, error) {
 	inputVars := expressions.Variables{}
 	outputVars := expressions.Variables{output: true}
 

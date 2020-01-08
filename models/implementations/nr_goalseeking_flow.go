@@ -40,7 +40,7 @@ type NRGoalSeekAlgorithmArgsProvider func(arguments expressions.Arguments) (
 
 
 // Builds a new Newton-Raphson algorithm.
-func NewNewtonRaphsonGoalSeekingFlow(
+func NewNewtonRaphsonGoalSeekingModelFlow(
 	expression expressions.Expression, coDomain, invertedVariable expressions.Variable,
 	argsProvider NRGoalSeekAlgorithmArgsProvider,
 ) (*models.GoalSeekingModelFlow, error) {
