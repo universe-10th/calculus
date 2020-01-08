@@ -206,7 +206,7 @@ func Var(name string) Variable {
 
 
 // Num constructs a new Constant node.
-func Num(n sets.Number) Constant {
+func Num(n interface{}) Constant {
 	wrapped, _ := sets.Wrap(sets.Clone(n))
 	return Constant{wrapped}
 }
