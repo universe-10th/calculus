@@ -148,7 +148,7 @@ func (tan TanExpr) wrappedTan(input sets.Number) (result sets.Number, err error)
 	defer func(){
 		if r := recover(); r != nil {
 			result = nil
-			err = errors.TangentOfVertical
+			err = errors.ErrTangentOfVertical
 		}
 	}()
 	result = ops.Tan(input)

@@ -39,7 +39,7 @@ func (round Round) Evaluate(args Arguments) (sets.Number, error) {
 	} else if result := ops.Round(result, round.roundType); result != nil {
 		return result, nil
 	} else {
-		return nil, errors.InfiniteCannotBeRounded
+		return nil, errors.ErrInfiniteCannotBeRounded
 	}
 }
 
@@ -180,16 +180,16 @@ func (defectiveOnInt DefectiveOnInt) Evaluate(args Arguments) (sets.Number, erro
 	evaluated, _ := defectiveOnInt.bypassed.Evaluate(args)
 	switch vn := evaluated.(type) {
 	case *big.Int:
-		return nil, errors.UndefinedOnInteger
+		return nil, errors.ErrUndefinedOnInteger
 	case *big.Rat:
 		if vn.IsInt() {
-			return nil, errors.UndefinedOnInteger
+			return nil, errors.ErrUndefinedOnInteger
 		} else {
 			return defectiveOnInt.result, nil
 		}
 	case *big.Float:
 		if vn.IsInt() {
-			return nil, errors.UndefinedOnInteger
+			return nil, errors.ErrUndefinedOnInteger
 		} else {
 			return defectiveOnInt.result, nil
 		}

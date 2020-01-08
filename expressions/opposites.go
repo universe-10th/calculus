@@ -149,7 +149,7 @@ func (inverse InverseExpr) wrappedInverse(value sets.Number) (result sets.Number
 	defer func(){
 		if r := recover(); r != nil {
 			result = nil
-			err = errors.DivisionByZero
+			err = errors.ErrDivisionByZero
 		}
 	}()
 	result = ops.Inv(value)

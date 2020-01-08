@@ -33,7 +33,7 @@ func (numberSplitModelFlow *NumberSplitModelFlow) Evaluate(arguments expressions
 	if number, ok := arguments[numberSplitModelFlow.input]; !ok {
 		return nil, merrors.ErrInsufficientArguments
 	} else if intPart, fracPart := ops.Split(number); intPart == nil {
-		return nil, errors.InfiniteCannotBeRounded
+		return nil, errors.ErrInfiniteCannotBeRounded
 	} else {
 		return expressions.Arguments{
 			numberSplitModelFlow.intOutput: intPart,

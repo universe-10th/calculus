@@ -107,7 +107,7 @@ func (variable Variable) Curry(args Arguments) (Expression, error) {
 // It returns an error if a value for the current variable is not present.
 func (variable Variable) Evaluate(args Arguments) (sets.Number, error) {
 	if value, ok := args[variable]; !ok {
-		return nil, errors.UndefinedValue
+		return nil, errors.ErrUndefinedValue
 	} else {
 		return value, nil
 	}

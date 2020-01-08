@@ -26,7 +26,7 @@ func (factorial FactorialExpr) Derivative(wrt Variable) (Expression, error) {
 	variables := Variables{}
 	factorial.arg.CollectVariables(variables)
 	if !factorial.arg.IsConstant(wrt) {
-		return nil, errors.NotDerivableExpression
+		return nil, errors.ErrNotDerivableExpression
 	} else {
 		return Num(big.NewFloat(0)), nil
 	}
@@ -67,7 +67,7 @@ func (factorial FactorialExpr) wrappedFactorial(input sets.Number) (result sets.
 	defer func(){
 		if r := recover(); r != nil {
 			result = nil
-			err = errors.InvalidFactorialArgument
+			err = errors.ErrInvalidFactorialArgument
 		}
 	}()
 	return ops.Factorial(input), nil
