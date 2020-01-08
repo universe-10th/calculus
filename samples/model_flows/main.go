@@ -33,6 +33,14 @@ func main() {
 	)
 	numberSplitModel, _ := implementations.NewNumberSplitModelFlow(Z, Y, X)
 
+	fmt.Println("Expected input for linear model:", linearModel.Input())
+	fmt.Println("Expected input for quadratic model:", quadraticModel.Input())
+	fmt.Println("Expected input for exponential model:", exponentialModel.Input())
+	fmt.Println("Expected input for serial model:", serialModel.Input())
+	fmt.Println("Expected input for parallel model:", parallelModel.Input())
+	fmt.Println("Expected input for inverted model:", invertedLinearModel.Input())
+	fmt.Println("Expected input for split model:", numberSplitModel.Input())
+
 	result, err := linearModel.Evaluate(Arguments{
 		A: 2, B: 3, X: 5,
 	}.Wrap())
