@@ -22,7 +22,10 @@ func NewParallelModelFlow(elements ...ModelFlow) (*ParallelModelFlow, error) {
 	if len(elements) == 0 {
 		return nil, errors.ErrNoParallelModelFlowsGiven
 	}
-	cachedVars := cachedVars{}
+	cachedVars := cachedVars{
+		expressions.Variables{},
+		expressions.Variables{},
+	}
 	for _, element := range elements {
 		if element == nil {
 			return nil, errors.ErrModelFlowIsNil
