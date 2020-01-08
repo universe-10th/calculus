@@ -2,6 +2,7 @@ package implementations
 
 import (
 	"github.com/universe-10th/calculus/models"
+	merrors "github.com/universe-10th/calculus/models/errors"
 	"github.com/universe-10th/calculus/expressions"
 	"github.com/universe-10th/calculus/ops"
 	"github.com/universe-10th/calculus/errors"
@@ -29,7 +30,9 @@ func NewNumberSplitModelFlow(input, intOutput, fracOutput expressions.Variable) 
 
 
 func (numberSplitModelFlow *NumberSplitModelFlow) Evaluate(arguments expressions.Arguments) (expressions.Arguments, error) {
-	if intPart, fracPart := ops.Split(arguments[numberSplitModelFlow.input]); intPart == nil {
+	if number, ok := arguments[numberSplitModelFlow.input]; !ok {
+		return nil, merrors.ErrInsufficientArguments
+	} else if intPart, fracPart := ops.Split(number); intPart == nil {
 		return nil, errors.InfiniteCannotBeRounded
 	} else {
 		return expressions.Arguments{

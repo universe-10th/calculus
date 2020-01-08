@@ -31,6 +31,7 @@ func main() {
 			return
 		},
 	)
+	numberSplitModel, _ := implementations.NewNumberSplitModelFlow(Z, Y, X)
 
 	result, err := linearModel.Evaluate(Arguments{
 		A: 2, B: 3, X: 5,
@@ -61,4 +62,9 @@ func main() {
 		A: 2, B: 3, Y: 5,
 	}.Wrap())
 	fmt.Println("Evaluating inverted linear model:", result, err)
+
+	result, err = numberSplitModel.Evaluate(Arguments{
+		Z: 13.78,
+	}.Wrap())
+	fmt.Println("Evaluating number split model:", result, err)
 }
