@@ -23,7 +23,7 @@ func (cached *cachedVars) Input() expressions.Variables {
 // Returns a copy of the output vars set.
 func (cached *cachedVars) Output() expressions.Variables {
 	output := expressions.Variables{}
-	for outputVar, _ := range cached.input {
+	for outputVar, _ := range cached.output {
 		output[outputVar] = true
 	}
 	return output
