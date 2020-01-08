@@ -12,3 +12,6 @@ var ErrInvalidFactorialArgument = errors.New("argument to factorial does not fit
 var ErrNotDerivableExpression = errors.New("this expression is not derivable")
 var ErrUndefinedOnInteger = errors.New("this expression is undefined on integer values")
 var ErrInfiniteCannotBeRounded = errors.New("infinite numbers cannot be rounded")
+// For model
+var ErrAmbiguousIputSpec = errors.New("cannot add a model flow because their input spec has conflicts with at least one already-added input spec")
+var ErrNoRegisteredFlowFowInput = errors.New("there is no registered model flow expecting the given arguments")
