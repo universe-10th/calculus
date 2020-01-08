@@ -32,7 +32,7 @@ func NewSingleOutputFlow(output expressions.Variable, expression expressions.Exp
 		output: outputVars,
 	}
 
-	if !cachedVars.hasConsistentDomain() {
+	if !cachedVars.HasConsistentDomain() {
 		return nil, errors.ErrOutputVariableInsideFlowExpression
 	}
 

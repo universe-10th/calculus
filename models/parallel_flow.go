@@ -32,10 +32,10 @@ func NewParallelModelFlow(elements ...ModelFlow) (*ParallelModelFlow, error) {
 				return nil, errors.ErrOutputVariableMergedTwice
 			}
 		}
-		elementCachedVars := element.cachedVars()
-		cachedVars.merge(elementCachedVars)
+		elementCachedVars := element.CachedVars()
+		cachedVars.Merge(elementCachedVars)
 	}
-	if !cachedVars.hasConsistentDomain() {
+	if !cachedVars.HasConsistentDomain() {
 		return nil, errors.ErrSomeModelOutputsBelongToOtherModelInputs
 	}
 	return &ParallelModelFlow{

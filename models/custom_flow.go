@@ -20,7 +20,7 @@ type CustomModelFlow struct {
 // for a derived-class instance.
 func NewCustomModelFlow(inputVars, outputVars expressions.Variables) (*CustomModelFlow, error) {
 	cachedVars := cachedVars{inputVars, outputVars}
-	if !cachedVars.hasConsistentDomain() {
+	if !cachedVars.HasConsistentDomain() {
 		return nil, errors.ErrOutputVariableInsideFlowExpression
 	}
 	return &CustomModelFlow{cachedVars}, nil
