@@ -5,6 +5,7 @@ import (
 	"github.com/universe-10th/calculus/sets"
 	"github.com/universe-10th/calculus/models/errors"
 	"github.com/universe-10th/calculus/utils"
+	"fmt"
 )
 
 
@@ -100,7 +101,7 @@ func NewGoalSeekingModelFlow(expression expressions.Expression, coDomain, invert
 func (goalSeekingModelFlow GoalSeekingModelFlow) getNonInvertedArguments(arguments expressions.Arguments) expressions.Arguments {
 	argumentsCopy := expressions.Arguments{}
 	for key, value := range arguments {
-		if key != goalSeekingModelFlow.coDomainVariable {
+		if key != goalSeekingModelFlow.invertedVariable {
 			argumentsCopy[key] = value
 		}
 	}
@@ -131,6 +132,7 @@ func (goalSeekingModelFlow *GoalSeekingModelFlow) Evaluate(arguments expressions
 			// a value must be set, among the arguments, for the co-domain
 			// variable
 			if goal, ok := arguments[coDomain]; !ok {
+				fmt.Println("Missing argument", coDomain, "among arguments", arguments)
 				return nil, errors.ErrInsufficientArguments
 			} else {
 				goalBased := utils.GoalBasedExpression(curried, goal)
