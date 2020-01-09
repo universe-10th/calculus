@@ -1,4 +1,4 @@
-package solvers
+package goals
 
 import (
 	"github.com/universe-10th/calculus/expressions"

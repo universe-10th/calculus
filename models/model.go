@@ -65,7 +65,7 @@ func (model *Model) AddFlow(modelFlow ModelFlow) error {
 	input := modelFlow.Input()
 	for _, mapping := range model.modelFlowMappings {
 		if isSubset(mapping.variables, input) || isSubset(input, mapping.variables) {
-			return errors.ErrAmbiguousIputSpec
+			return errors.ErrAmbiguousInputSpec
 		}
 	}
 	model.modelFlowMappings = append(model.modelFlowMappings, ModelFlowMapping{

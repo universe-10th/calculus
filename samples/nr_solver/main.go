@@ -3,9 +3,9 @@ package main
 import (
 	"math/big"
 	. "github.com/universe-10th/calculus/expressions"
-	"github.com/universe-10th/calculus/solvers"
 	"fmt"
 	"github.com/universe-10th/calculus/utils"
+	"github.com/universe-10th/calculus/goals"
 )
 
 
@@ -26,7 +26,7 @@ func main() {
 	guess := big.NewFloat(1000000.0)
 	epsilon := utils.Epsilon(10)
 	fmt.Printf("Testing Newton-Raphson sample: %s with initial guess: %f\n", nrSample, guess)
-	if nrResult, err := solvers.NewtonRaphson(nrSample, guess, epsilon, 10000, 10); err != nil {
+	if nrResult, err := goals.NewtonRaphson(nrSample, guess, epsilon, 10000, 10); err != nil {
 		fmt.Printf("Error in Newton-Raphson: %s\n", err)
 	} else {
 		fmt.Printf("Returned value: %f\n", nrResult)

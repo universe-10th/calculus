@@ -4,9 +4,9 @@ import (
 	"math/big"
 	"github.com/universe-10th/calculus/expressions"
 	"github.com/universe-10th/calculus/sets"
-	"github.com/universe-10th/calculus/solvers"
 	"github.com/universe-10th/calculus/models"
 	"errors"
+	"github.com/universe-10th/calculus/goals"
 )
 
 
@@ -21,7 +21,7 @@ type NRGoalSeekingAlgorithm struct {
 
 // Executes the well-known Newton-Raphson method.
 func (nrGoalSeekingAlgorithm NRGoalSeekingAlgorithm) FindRoot(goalBasedExpression expressions.Expression) (sets.Number, error) {
-	return solvers.NewtonRaphson(
+	return goals.NewtonRaphson(
 		goalBasedExpression, nrGoalSeekingAlgorithm.initialGuess,
 		nrGoalSeekingAlgorithm.epsilon, nrGoalSeekingAlgorithm.maxIterations, nrGoalSeekingAlgorithm.maxArgCorrectionsPerIteration,
 	)

@@ -1,4 +1,4 @@
-package solvers
+package goals
 
 import (
 	"math/big"
