@@ -5,7 +5,6 @@ import (
 	"errors"
 	"math/big"
 	"math/rand"
-	"github.com/universe-10th/calculus/goals/support"
 	"github.com/universe-10th/calculus/sets"
 	diffUtils "github.com/universe-10th/calculus/utils/diff"
 	goalErrors "github.com/universe-10th/calculus/goals/errors"
@@ -29,18 +28,16 @@ func nextNewtonRaphsonStep(expression, derivative func(*big.Float) (sets.Number,
 		if currentDerRes, err = derivative(current); err != nil {
 			return nil, err
 		}
-		if currentDerImg, err = support.ForceFloat(currentDerRes); err != nil {
-			return nil, err
-		}
+		// This function may panic, but we're covered in the parent call.
+		currentDerImg = sets.UpCastOneTo(currentDerRes, sets.R).(*big.Float)
 		if currentDerImg.Sign() != 0 {
 			// evaluate f(currentArg) into currentImg if told to recalculate.
 			if recalculate {
 				if currentRes, err = expression(current); err != nil {
 					return nil, err
 				}
-				if currentImg, err = support.ForceFloat(currentRes); err != nil {
-					return nil, err
-				}
+				// This function may panic, but we're covered in the parent call.
+				currentImg = sets.UpCastOneTo(currentRes, sets.R).(*big.Float)
 			}
 			// Compute x = x - f(x)/f'(x).
 			current.Sub(current, quot.Quo(currentImg, currentDerImg))
@@ -80,14 +77,19 @@ func NewtonRaphson(expression, derivative func(*big.Float) (sets.Number, error),
 		maxIterations = 100
 	}
 	var iteration uint32
+	defer func() {
+		if recovered := recover(); recovered != nil {
+			result = nil
+			exception = errors.New(recovered.(string))
+		}
+	}()
 	for iteration = 0; iteration < maxIterations; iteration++ {
 		// evaluate f(currentArg) into currentImg.
 		if currentRes, err = expression(currentArg); err != nil {
 			return nil, err
 		}
-		if currentImg, err = support.ForceFloat(currentRes); err != nil {
-			return nil, err
-		}
+		// This function may panic, but we're covered here.
+		currentImg = sets.UpCastOneTo(currentRes, sets.R).(*big.Float)
 		// If it is close to zero, then return.
 		if diffUtils.CloseTo(currentImg, zero, diff, dist, epsilon) {
 			return currentArg, nil

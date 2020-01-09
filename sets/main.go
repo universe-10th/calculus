@@ -201,7 +201,7 @@ func BelongsTo(a Number, set Set) bool {
 }
 
 
-func upCast(a Number, s Set) Number {
+func UpCastOneTo(a Number, s Set) Number {
 	switch va := a.(type) {
 	case *big.Int:
 		switch s {
@@ -230,7 +230,7 @@ func upCast(a Number, s Set) Number {
 func UpCastTo(toSet Set, a ...Number) []Number {
 	result := make([]Number, len(a))
 	for index, value := range a {
-		result[index] = upCast(value, toSet)
+		result[index] = UpCastOneTo(value, toSet)
 	}
 	return result
 }
