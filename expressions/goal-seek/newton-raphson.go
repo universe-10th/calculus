@@ -5,7 +5,7 @@ import (
 	"math/big"
 	"github.com/universe-10th/calculus/expressions"
 	"github.com/universe-10th/calculus/sets"
-	"github.com/universe-10th/calculus/goals"
+	"github.com/universe-10th/calculus/core/goals"
 	"errors"
 )
 

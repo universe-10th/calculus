@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/universe-10th/calculus/models/implementations"
 	"math/big"
-	diffUtils "github.com/universe-10th/calculus/utils/diff"
+	diffUtils "github.com/universe-10th/calculus/core/utils/diff"
 )
 
 func main() {

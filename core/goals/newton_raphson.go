@@ -6,8 +6,8 @@ import (
 	"math/big"
 	"math/rand"
 	"github.com/universe-10th/calculus/sets"
-	diffUtils "github.com/universe-10th/calculus/utils/diff"
-	goalErrors "github.com/universe-10th/calculus/goals/errors"
+	diffUtils "github.com/universe-10th/calculus/core/utils/diff"
+	goalErrors "github.com/universe-10th/calculus/core/goals/errors"
 )
 
 
