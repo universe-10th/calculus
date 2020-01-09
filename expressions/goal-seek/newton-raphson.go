@@ -1,6 +1,7 @@
 package goal_seek
 
 import (
+	"fmt"
 	"math/big"
 	"github.com/universe-10th/calculus/expressions"
 	"github.com/universe-10th/calculus/sets"
@@ -14,15 +15,30 @@ import (
 type NRGoalSeekingAlgorithm struct {
 	initialGuess, epsilon *big.Float
 	maxIterations, maxArgCorrectionsPerIteration uint32
+	inverted expressions.Variable
 }
 
 
 // Executes the well-known Newton-Raphson method.
 func (nrGoalSeekingAlgorithm NRGoalSeekingAlgorithm) FindRoot(goalBasedExpression expressions.Expression) (sets.Number, error) {
-	return goals.NewtonRaphson(
-		goalBasedExpression, nrGoalSeekingAlgorithm.initialGuess,
-		nrGoalSeekingAlgorithm.epsilon, nrGoalSeekingAlgorithm.maxIterations, nrGoalSeekingAlgorithm.maxArgCorrectionsPerIteration,
-	)
+	inverted := nrGoalSeekingAlgorithm.inverted
+	if goalBasedDerivativeExpression, err := goalBasedExpression.Derivative(inverted); err != nil {
+		return nil, err
+	} else {
+		fmt.Println("Goal:", goalBasedExpression, "derivative:", goalBasedDerivativeExpression)
+		goalBasedExpressionFunction := func(current *big.Float) (sets.Number, error) {
+			fmt.Println("Trying inverted variable:", inverted, "with value:", current, "in expression")
+			return goalBasedExpression.Evaluate(expressions.Arguments{inverted: current})
+		}
+		goalBasedDerivativeExpressionFunction := func(current *big.Float) (sets.Number, error) {
+			fmt.Println("Trying inverted variable:", inverted, "with value:", current, "in derivative")
+			return goalBasedDerivativeExpression.Evaluate(expressions.Arguments{inverted: current})
+		}
+		return goals.NewtonRaphson(
+			goalBasedExpressionFunction, goalBasedDerivativeExpressionFunction, nrGoalSeekingAlgorithm.initialGuess,
+			nrGoalSeekingAlgorithm.epsilon, nrGoalSeekingAlgorithm.maxIterations, nrGoalSeekingAlgorithm.maxArgCorrectionsPerIteration,
+		)
+	}
 }
 
 
@@ -50,7 +66,9 @@ func NRGoalSeek(
 			return nil, ErrNRGoalSeekingAlgorithmBadParams
 		} else {
 			return NRGoalSeekingAlgorithm{
-				initial, epsilon, maxIterations, maxCorrections,
+				initial, epsilon,
+				maxIterations, maxCorrections,
+				inverted,
 			}, nil
 		}
 	})
