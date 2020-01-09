@@ -5,6 +5,7 @@ import (
 	"github.com/universe-10th/calculus/expressions"
 	"github.com/universe-10th/calculus/goals/support"
 	"github.com/universe-10th/calculus/sets"
+	diffUtils "github.com/universe-10th/calculus/utils/diff"
 	"errors"
 	"math/rand"
 	"time"
@@ -97,7 +98,7 @@ func NewtonRaphson(expression expressions.Expression, initialGuess, epsilon *big
 				return nil, err
 			}
 			// If it is close to zero, then return.
-			if support.CloseTo(currentImg, zero, diff, dist, epsilon) {
+			if diffUtils.CloseTo(currentImg, zero, diff, dist, epsilon) {
 				return currentArg, nil
 			}
 			// Otherwise, process a newton-raphson step.

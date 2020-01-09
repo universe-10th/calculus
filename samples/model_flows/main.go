@@ -2,11 +2,12 @@ package main
 
 import (
 	. "github.com/universe-10th/calculus/expressions"
+	. "github.com/universe-10th/calculus/expressions/goal-seek"
 	"github.com/universe-10th/calculus/models"
 	"fmt"
 	"github.com/universe-10th/calculus/models/implementations"
 	"math/big"
-	"github.com/universe-10th/calculus/utils"
+	diffUtils "github.com/universe-10th/calculus/utils/diff"
 )
 
 func main() {
@@ -16,21 +17,20 @@ func main() {
 	linearExpr := Add(B, Mul(X, A))
 	quadraticExpr := Add(C, Mul(B, X), Mul(A, Pow(X, Num(2))))
 	exponentialExpr := Exp(Y)
+	invertedLinear := NRGoalSeek(Y, linearExpr, X, func(arguments Arguments) (initialGuess, epsilon *big.Float, maxIterations, maxArgCorrectionsPerIteration uint32) {
+		initialGuess = big.NewFloat(0.0)
+		epsilon = diffUtils.Epsilon(70)
+		maxIterations = 100
+		maxArgCorrectionsPerIteration = 100
+		return
+	})
 
 	linearModel, _ := models.NewSingleOutputModelFlow(Y, linearExpr)
 	quadraticModel, _ := models.NewSingleOutputModelFlow(Z, quadraticExpr)
 	exponentialModel, _ := models.NewSingleOutputModelFlow(W, exponentialExpr)
 	serialModel, _ := models.NewSerialModelFlow(linearModel, exponentialModel)
 	parallelModel, _ := models.NewParallelModelFlow(linearModel, quadraticModel)
-	invertedLinearModel, _ := implementations.NewNewtonRaphsonGoalSeekingModelFlow(
-		linearExpr, Y, X, func(arguments Arguments) (initialGuess, epsilon *big.Float, maxIterations, maxArgCorrectionsPerIteration uint32) {
-			initialGuess = big.NewFloat(0.0)
-			epsilon = utils.Epsilon(70)
-			maxIterations = 100
-			maxArgCorrectionsPerIteration = 100
-			return
-		},
-	)
+	invertedLinearModel, _ := models.NewSingleOutputModelFlow(X, invertedLinear)
 	numberSplitModel, _ := implementations.NewNumberSplitModelFlow(Z, Y, X)
 
 	fmt.Println("Expected input for linear model:", linearModel.Input())

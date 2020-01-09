@@ -1,4 +1,4 @@
-package utils
+package diff
 
 import (
 	"math/big"
