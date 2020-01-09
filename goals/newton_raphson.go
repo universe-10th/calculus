@@ -3,7 +3,7 @@ package goals
 import (
 	"math/big"
 	"github.com/universe-10th/calculus/expressions"
-	"github.com/universe-10th/calculus/solvers/support"
+	"github.com/universe-10th/calculus/goals/support"
 	"github.com/universe-10th/calculus/sets"
 	"errors"
 	"math/rand"
@@ -109,16 +109,5 @@ func NewtonRaphson(expression expressions.Expression, initialGuess, epsilon *big
 			}
 		}
 		return nil, support.ErrIterationsExhausted
-	}
-}
-
-
-// MakeNewtonRaphsonSolver constructs a new Solver with the given parameters for the Newton-Raphson algorithm.
-// This is important to remark: parameters given are fixed into the new solver, and sometimes this is useful
-// (e.g. when calculating an Internal Rate of Return, you'll always use a big value like 1000000 and typically
-// a small epsilon like 10^-20: you could then build the solver once and use it repeatedly).
-func MakeNewtonRaphsonSolver(initialGuess, epsilon *big.Float, maxIterations, maxArgCorrectionsPerIteration uint32) Solver {
-	return func(expression expressions.Expression) (*big.Float, error) {
-		return NewtonRaphson(expression, initialGuess, epsilon, maxIterations, maxArgCorrectionsPerIteration);
 	}
 }
