@@ -1,14 +1,14 @@
 package goals
 
 import (
+	"time"
+	"errors"
 	"math/big"
+	"math/rand"
 	"github.com/universe-10th/calculus/goals/support"
 	"github.com/universe-10th/calculus/sets"
 	diffUtils "github.com/universe-10th/calculus/utils/diff"
-	"errors"
-	"math/rand"
-	"time"
-	"fmt"
+	goalErrors "github.com/universe-10th/calculus/goals/errors"
 )
 
 
@@ -43,7 +43,6 @@ func nextNewtonRaphsonStep(expression, derivative func(*big.Float) (sets.Number,
 				}
 			}
 			// Compute x = x - f(x)/f'(x).
-			fmt.Println("current image:", currentImg, "current derivative:", currentDerImg)
 			current.Sub(current, quot.Quo(currentImg, currentDerImg))
 			return current, nil
 		} else {
@@ -101,5 +100,5 @@ func NewtonRaphson(expression, derivative func(*big.Float) (sets.Number, error),
 			return nil, err
 		}
 	}
-	return nil, support.ErrIterationsExhausted
+	return nil, goalErrors.ErrIterationsExhausted
 }
