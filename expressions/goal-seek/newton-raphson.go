@@ -39,10 +39,10 @@ type NRGoalSeekAlgorithmArgsProvider func(arguments expressions.Arguments) (
 
 // Builds a new Newton-Raphson algorithm.
 func NRGoalSeek(
-	expression expressions.Expression, coDomain, invertedVariable expressions.Variable,
+	goal, target expressions.Expression, invertedVariable expressions.Variable,
 	argsProvider NRGoalSeekAlgorithmArgsProvider,
 ) expressions.Expression {
-	return expressions.GoalSeek(expression, coDomain, invertedVariable, func(
+	return expressions.GoalSeek(goal, target, invertedVariable, func(
 		arguments expressions.Arguments, inverted expressions.Variable, fullDomain expressions.Variables,
 	) (expressions.GoalSeekingAlgorithm, error) {
 		initial, epsilon, maxIterations, maxCorrections := argsProvider(arguments)
