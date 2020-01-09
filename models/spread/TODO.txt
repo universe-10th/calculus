@@ -4,11 +4,11 @@ Excel spreadsheet but in N dimensions. This comes like this:
 
 1. The whole model will involve a space of N dimensions, each indexed from 0 to potentially infinite.
 2. This model will consist of several "data blocks" which we may understand as "tensors" inside that space.
-3. Such tensors will have cells (N-dimensional cells) with content being:
-   - If no data in the cell, it will become 0.
+3. Such tensors will have cells (N-dimensional cells) with content being (all these changes applied in order!!!):
+   - If the data is null, it will become 0.
    - If the data is a number, it will be wrapped into a "big" number.
    - If the data is a "big" number, it will be wrapped into an expression.
    - If the data is an expression, it will be wrapped into a Single Output Model.
      - The name of the output variable will be "CELL:<X>" for N=1, "CELL:<X>:<Y>" for N=2, ...
        In this case: X, Y... are non-negative integers.
-   - The data in the cell may be any kind of model.
+   - Other types will raise an error.
