@@ -27,11 +27,9 @@ func (nrGoalSeekingAlgorithm NRGoalSeekingAlgorithm) FindRoot(goalBasedExpressio
 	} else {
 		fmt.Println("Goal:", goalBasedExpression, "derivative:", goalBasedDerivativeExpression)
 		goalBasedExpressionFunction := func(current *big.Float) (sets.Number, error) {
-			fmt.Println("Trying inverted variable:", inverted, "with value:", current, "in expression")
 			return goalBasedExpression.Evaluate(expressions.Arguments{inverted: current})
 		}
 		goalBasedDerivativeExpressionFunction := func(current *big.Float) (sets.Number, error) {
-			fmt.Println("Trying inverted variable:", inverted, "with value:", current, "in derivative")
 			return goalBasedDerivativeExpression.Evaluate(expressions.Arguments{inverted: current})
 		}
 		return goals.NewtonRaphson(
