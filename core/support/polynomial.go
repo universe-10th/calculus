@@ -1,4 +1,4 @@
-package utils
+package support
 
 import "github.com/universe-10th/calculus/expressions"
 
