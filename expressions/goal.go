@@ -37,8 +37,8 @@ type GoalSeekExpr struct {
 	// The goal expression is the one we will fully evaluate
 	// by the usual Evaluate mechanism. Also the variables
 	// involved in the goal will be cached
-	goal Expression
-	goalDomain Variables
+	goal         Expression
+	targetDomain Variables
 	// The target expression is the one we will curry and then
 	// normalize to "zero" by subtracting the computed goal.
 	// After currying, the new goal is to find the appropriate
@@ -131,11 +131,12 @@ func (goalSeekExpr GoalSeekExpr) getNonInvertedArguments(arguments Arguments) Ar
 // Evaluate computes the factorial over the evaluated inner argument's value.
 // It will be an error if the inner value does not evaluate into N0.
 func (goalSeekExpr GoalSeekExpr) Evaluate(args Arguments) (sets.Number, error) {
-	if _, ok := goalSeekExpr.goalDomain[goalSeekExpr.inverted]; !ok {
+	fmt.Print("Target domain:", goalSeekExpr.targetDomain, "inverted:", goalSeekExpr.inverted)
+	if _, ok := goalSeekExpr.targetDomain[goalSeekExpr.inverted]; !ok {
 		return nil, errors.ErrInvertedVariableNotInDomain
 	} else if goal, err := goalSeekExpr.goal.Evaluate(args); err != nil {
 		return nil, err
-	} else if engine, err := goalSeekExpr.factory(args, goalSeekExpr.inverted, goalSeekExpr.goalDomain); err != nil {
+	} else if engine, err := goalSeekExpr.factory(args, goalSeekExpr.inverted, goalSeekExpr.targetDomain); err != nil {
 		return nil, err
 	} else if curried, err := goalSeekExpr.target.Curry(goalSeekExpr.getNonInvertedArguments(args)); err != nil {
 		return nil, err
@@ -156,7 +157,7 @@ func (goalSeekExpr GoalSeekExpr) IsSelfContained() bool {
 
 
 func GoalSeek(goal, target Expression, inverted Variable, factory GoalSeekingAlgorithmFactory) Expression {
-	goalDomain := Variables{}
-	goal.CollectVariables(goalDomain)
-	return GoalSeekExpr{goal, goalDomain,target, inverted, factory}
+	targetDomain := Variables{}
+	target.CollectVariables(targetDomain)
+	return GoalSeekExpr{goal, targetDomain,target, inverted, factory}
 }
