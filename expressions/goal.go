@@ -57,7 +57,11 @@ type GoalSeekExpr struct {
 
 // Derivative cannot be calculated
 func (goalSeekExpr GoalSeekExpr) Derivative(wrt Variable) (Expression, error) {
-	return nil, errors.ErrNotDerivableExpression
+	if goalSeekExpr.IsConstant(wrt) {
+		return Num(0), nil
+	} else {
+		return nil, errors.ErrNotDerivableExpression
+	}
 }
 
 
