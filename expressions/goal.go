@@ -135,7 +135,6 @@ func (goalSeekExpr GoalSeekExpr) getNonInvertedArguments(arguments Arguments) Ar
 // Evaluate computes the factorial over the evaluated inner argument's value.
 // It will be an error if the inner value does not evaluate into N0.
 func (goalSeekExpr GoalSeekExpr) Evaluate(args Arguments) (sets.Number, error) {
-	fmt.Print("Target domain:", goalSeekExpr.targetDomain, "inverted:", goalSeekExpr.inverted)
 	if _, ok := goalSeekExpr.targetDomain[goalSeekExpr.inverted]; !ok {
 		return nil, errors.ErrInvertedVariableNotInDomain
 	} else if goal, err := goalSeekExpr.goal.Evaluate(args); err != nil {
