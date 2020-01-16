@@ -107,7 +107,7 @@ func (variable Variable) Curry(args Arguments) (Expression, error) {
 // It returns an error if a value for the current variable is not present.
 func (variable Variable) Evaluate(args Arguments) (sets.Number, error) {
 	if value, ok := args[variable]; !ok {
-		return nil, errors.UndefinedValue
+		return nil, errors.ErrUndefinedValue
 	} else {
 		return value, nil
 	}
@@ -206,16 +206,16 @@ func Var(name string) Variable {
 
 
 // Num constructs a new Constant node.
-func Num(n sets.Number) Constant {
+func Num(n interface{}) Constant {
 	wrapped, _ := sets.Wrap(sets.Clone(n))
 	return Constant{wrapped}
 }
 
 
-// Ensure takes an arbitrary value and creates an expression out of it.
+// MakeExpression takes an arbitrary value and creates an expression out of it.
 // If the value was already an expression, it returns it as-is.
 // Otherwise, it makes a constant expression out of it.
-func Ensure(n interface{}) Expression {
+func MakeExpression(n interface{}) Expression {
 	if exp, ok := n.(Expression); ok {
 		return exp
 	} else {

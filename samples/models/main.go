@@ -1,47 +1,37 @@
 package main
 
 import (
-	"github.com/universe-10th/calculus/utils"
 	. "github.com/universe-10th/calculus/expressions"
 	"fmt"
-	"github.com/universe-10th/calculus/solvers"
-	"math/big"
-	"github.com/universe-10th/calculus/solvers/support"
+	"github.com/universe-10th/calculus/models"
 )
 
 
-func SampleModel() *utils.Model {
-	// Z = X/Y + W
-	model, _ := utils.NewModel(Z, Add(Mul(X, Inverse(Y)), W))
-	// W = Z - X/Y
-	fmt.Println(model.SetCorollary(W, Add(Z, Negated(Mul(X, Inverse(Y))))))
-	// X (by solver) will be: Y*(Z - W)
-	// Y (by solver) will be: X/(Z - W)
+func SampleModel() *models.Model {
+	// Z = X/Y + W, and corollaries
+	model := models.NewModel()
+	flowZ, _ := models.NewSingleOutputModelFlow(Z, Add(W, Div(X, Y)))
+	model.AddFlow(flowZ)
+	flowW, _ := models.NewSingleOutputModelFlow(W, Sub(Z, Div(X, Y)))
+	model.AddFlow(flowW)
+	flowX, _ := models.NewSingleOutputModelFlow(X, Mul(Y, Sub(Z, W)))
+	model.AddFlow(flowX)
+	flowY, _ := models.NewSingleOutputModelFlow(Y, Div(X, Sub(Z, W)))
+	model.AddFlow(flowY)
 	return model
+}
+
+
+func TestModel(model *models.Model, arguments Arguments) {
+	result, err := model.Evaluate(arguments)
+	fmt.Println("Testing model with arguments:", arguments, "returns", result, err)
 }
 
 
 func main() {
 	model := SampleModel()
-	var result interface{}
-	var err    error
-	result, err = model.Evaluate(Arguments{
-		X: 1, Y: 2, W: 3,
-	}.Wrap(), nil)
-	fmt.Printf("Return after evaluating Z=Model(X: 1, Y: 2, W: 3): %v %v\n", result, err)
-	result, err = model.Evaluate(Arguments{
-		X: 1, Y: 2, Z: 3,
-	}.Wrap(), nil)
-	fmt.Printf("Return after evaluating W=Model^-1(X: 1, Y: 2, Z: 3): %v %v\n", result, err)
-	nrSolver := solvers.MakeNewtonRaphsonSolver(big.NewFloat(0).SetInt64(1000000), support.Epsilon(7), 100, 100)
-	result, err = model.Evaluate(Arguments{
-		W: 1, Y: 2, Z: 3,
-	}.Wrap(), nrSolver)
-	fmt.Printf("Return after evaluating X=Model^-1(W: 1, Y: 2, Z: 3): %v %v\n", result, err)
-	result, err = model.Evaluate(Arguments{
-		X: 1, W: 2, Z: 3,
-	}.Wrap(), nrSolver)
-	// It WILL fail with Newton-Raphson, since the function is not quadratically convergent.
-	// It will try more and more bigger negative values for Y, and then will return derivative of 0 due to lack of precision.
-	fmt.Printf("Return after evaluating Y=Model^-1(X: 1, W: 2, Z: 3): %v %v\n", result, err)
+	TestModel(model, Arguments{X: 6, Y: 3, W: 2}.Wrap())
+	TestModel(model, Arguments{X: 6, Y: 3, Z: 4}.Wrap())
+	TestModel(model, Arguments{X: 6, Z: 4, W: 2}.Wrap())
+	TestModel(model, Arguments{Z: 4, Y: 3, W: 2}.Wrap())
 }

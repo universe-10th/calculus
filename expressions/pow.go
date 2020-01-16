@@ -19,7 +19,7 @@ func (pow PowExpr) wrappedPow(base, exponent sets.Number) (result sets.Number, e
 	defer func(){
 		if r := recover(); r != nil {
 			result = nil
-			err = errors.InvalidPowerOperation
+			err = errors.ErrInvalidPowerOperation
 		}
 	}()
 	result = ops.Pow(base, exponent)
@@ -186,7 +186,7 @@ func (ln LnExpr) wrappedLn(power sets.Number) (result sets.Number, err error) {
 	defer func(){
 		if r := recover(); r != nil {
 			result = nil
-			err = errors.LogarithmOfNegative
+			err = errors.ErrLogarithmOfNegative
 		}
 	}()
 	result = ops.Ln(power)
@@ -279,7 +279,7 @@ func (log LogExpr) wrappedLn(power, base sets.Number) (result sets.Number, err e
 	defer func(){
 		if r := recover(); r != nil {
 			result = nil
-			err = errors.LogarithmOfNegative
+			err = errors.ErrLogarithmOfNegative
 		}
 	}()
 	result = ops.Log(power, base)
