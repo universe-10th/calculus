@@ -1,6 +1,6 @@
 package models
 
-import "github.com/universe-10th/calculus/expressions"
+import "github.com/universe-10th/calculus/v2/expressions"
 
 
 // Holds a reference to cached variables. Can return them later.

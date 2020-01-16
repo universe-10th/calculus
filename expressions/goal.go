@@ -1,9 +1,9 @@
 package expressions
 
 import (
-	"github.com/universe-10th/calculus/sets"
+	"github.com/universe-10th/calculus/v2/sets"
 	"fmt"
-	"github.com/universe-10th/calculus/errors"
+	"github.com/universe-10th/calculus/v2/errors"
 )
 
 // Goal-seeking algorithm engines will have only one method

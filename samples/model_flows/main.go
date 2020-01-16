@@ -1,13 +1,13 @@
 package main
 
 import (
-	. "github.com/universe-10th/calculus/expressions"
-	. "github.com/universe-10th/calculus/expressions/goal-seek"
-	"github.com/universe-10th/calculus/models"
+	. "github.com/universe-10th/calculus/v2/expressions"
+	. "github.com/universe-10th/calculus/v2/expressions/goal-seek"
+	"github.com/universe-10th/calculus/v2/models"
 	"fmt"
-	"github.com/universe-10th/calculus/models/implementations"
+	"github.com/universe-10th/calculus/v2/models/implementations"
 	"math/big"
-	diffUtils "github.com/universe-10th/calculus/core/support/diff"
+	diffUtils "github.com/universe-10th/calculus/v2/core/support/diff"
 )
 
 func main() {

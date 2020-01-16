@@ -3,9 +3,9 @@ package goal_seek
 import (
 	"fmt"
 	"math/big"
-	"github.com/universe-10th/calculus/expressions"
-	"github.com/universe-10th/calculus/sets"
-	"github.com/universe-10th/calculus/core/goals"
+	"github.com/universe-10th/calculus/v2/expressions"
+	"github.com/universe-10th/calculus/v2/sets"
+	"github.com/universe-10th/calculus/v2/core/goals"
 	"errors"
 )
 

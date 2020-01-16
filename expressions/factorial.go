@@ -2,9 +2,9 @@ package expressions
 
 import (
 	"math/big"
-	"github.com/universe-10th/calculus/errors"
-	"github.com/universe-10th/calculus/sets"
-	"github.com/universe-10th/calculus/ops"
+	"github.com/universe-10th/calculus/v2/errors"
+	"github.com/universe-10th/calculus/v2/sets"
+	"github.com/universe-10th/calculus/v2/ops"
 	"fmt"
 )
 

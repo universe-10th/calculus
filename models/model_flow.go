@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/universe-10th/calculus/expressions"
+	"github.com/universe-10th/calculus/v2/expressions"
 )
 
 

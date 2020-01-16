@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/universe-10th/calculus/core/support"
-	. "github.com/universe-10th/calculus/expressions"
+	"github.com/universe-10th/calculus/v2/core/support"
+	. "github.com/universe-10th/calculus/v2/expressions"
 )
 
 func main() {

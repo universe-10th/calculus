@@ -1,11 +1,11 @@
 package implementations
 
 import (
-	"github.com/universe-10th/calculus/models"
-	merrors "github.com/universe-10th/calculus/models/errors"
-	"github.com/universe-10th/calculus/expressions"
-	"github.com/universe-10th/calculus/ops"
-	"github.com/universe-10th/calculus/errors"
+	"github.com/universe-10th/calculus/v2/models"
+	merrors "github.com/universe-10th/calculus/v2/models/errors"
+	"github.com/universe-10th/calculus/v2/expressions"
+	"github.com/universe-10th/calculus/v2/ops"
+	"github.com/universe-10th/calculus/v2/errors"
 )
 
 
