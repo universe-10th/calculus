@@ -3,7 +3,6 @@ package models
 import (
 	"github.com/universe-10th/calculus/v2/expressions"
 	"github.com/universe-10th/calculus/v2/errors"
-	"github.com/universe-10th/calculus/v2/sets"
 )
 
 
@@ -106,7 +105,7 @@ func (model *Model) GetFlow(arguments expressions.Arguments) (ModelFlow, error) 
 
 // Attempts evaluating the model, finding the
 // appropriate flow, given a set of arguments.
-func (model *Model) Evaluate(arguments expressions.Arguments) (sets.Number, error) {
+func (model *Model) Evaluate(arguments expressions.Arguments) (expressions.Arguments, error) {
 	if flow, err := model.GetFlow(arguments); err != nil {
 		return nil, err
 	} else {
