@@ -1,7 +1,6 @@
 package goal_seek
 
 import (
-	"fmt"
 	"math/big"
 	"github.com/universe-10th/calculus/v2/expressions"
 	"github.com/universe-10th/calculus/v2/sets"
@@ -25,7 +24,6 @@ func (nrGoalSeekingAlgorithm NRGoalSeekingAlgorithm) FindRoot(goalBasedExpressio
 	if goalBasedDerivativeExpression, err := goalBasedExpression.Derivative(inverted); err != nil {
 		return nil, err
 	} else {
-		fmt.Println("Goal:", goalBasedExpression, "derivative:", goalBasedDerivativeExpression)
 		goalBasedExpressionFunction := func(current *big.Float) (sets.Number, error) {
 			return goalBasedExpression.Evaluate(expressions.Arguments{inverted: current})
 		}
