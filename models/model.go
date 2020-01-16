@@ -36,6 +36,21 @@ func NewModel() *Model {
 }
 
 
+// Creates a model with certain flows. This is
+// a convenience function wrapping a call to
+// NewModel() and several short-circuit-on-error
+// calls to AddFlow().
+func NewModelWith(flows ...ModelFlow) (*Model, error) {
+	model := NewModel()
+	for _, flow := range flows {
+		if err := model.AddFlow(flow); err != nil {
+			return nil, err
+		}
+	}
+	return model, nil
+}
+
+
 func isSubset(x, y expressions.Variables) bool {
 	for vx := range x {
 		if _, ok := y[vx]; !ok {

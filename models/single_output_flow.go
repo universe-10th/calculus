@@ -64,3 +64,27 @@ func (flow *SingleOutputModelFlow) Evaluate(arguments expressions.Arguments) (ex
 	}
 	return result, nil
 }
+
+
+type SingleOutputModelFlowSpec struct {
+	Variable expressions.Variable
+	Expression expressions.Expression
+}
+
+
+// Creates an array of single output model flows.
+// This is a convenience function to wrap several
+// calls to NewSingleOutputModelFlow by making a
+// short-circuit traversal until an error occurs,
+// and either returning all the created flows or
+// returning the raised error.
+func NewSingleOutputModelFlowSet(args ...SingleOutputModelFlowSpec) ([]ModelFlow, error) {
+	result := make([]ModelFlow, len(args))
+	var err error
+	for index, value := range args {
+		if result[index], err = NewSingleOutputModelFlow(value.Variable, value.Expression); err != nil {
+			return nil, err
+		}
+	}
+	return result, nil
+}
