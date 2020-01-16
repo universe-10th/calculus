@@ -24,6 +24,14 @@ func main() {
 		maxArgCorrectionsPerIteration = 100
 		return
 	})
+	highOrderPolynomial := Add(Mul(Num(3), X), Mul(Num(4), Pow(X, Num(2))), Mul(Num(7), Pow(X, Num(8))))
+	invertedPolynomial := NRGoalSeek(Y, highOrderPolynomial, X, func(arguments Arguments) (initialGuess, epsilon *big.Float, maxIterations, maxArgCorrectionsPerIteration uint32) {
+		initialGuess = big.NewFloat(-0.4)
+		epsilon = diffUtils.Epsilon(4)
+		maxIterations = 1000
+		maxArgCorrectionsPerIteration = 100
+		return
+	})
 
 	linearModel, _ := models.NewSingleOutputModelFlow(Y, linearExpr)
 	quadraticModel, _ := models.NewSingleOutputModelFlow(Z, quadraticExpr)
@@ -32,13 +40,15 @@ func main() {
 	parallelModel, _ := models.NewParallelModelFlow(linearModel, quadraticModel)
 	invertedLinearModel, _ := models.NewSingleOutputModelFlow(X, invertedLinear)
 	numberSplitModel, _ := implementations.NewNumberSplitModelFlow(Z, Y, X)
+	invertedPolynomialModel, _ := models.NewSingleOutputModelFlow(X, invertedPolynomial)
 
 	fmt.Println("Expected input for linear model:", linearModel.Input())
 	fmt.Println("Expected input for quadratic model:", quadraticModel.Input())
 	fmt.Println("Expected input for exponential model:", exponentialModel.Input())
 	fmt.Println("Expected input for serial model:", serialModel.Input())
 	fmt.Println("Expected input for parallel model:", parallelModel.Input())
-	fmt.Println("Expected input for inverted model:", invertedLinearModel.Input())
+	fmt.Println("Expected input for inverted linear model:", invertedLinearModel.Input())
+	fmt.Println("Expected input for inverted polynomial model:", invertedLinearModel.Input())
 	fmt.Println("Expected input for split model:", numberSplitModel.Input())
 
 	result, err := linearModel.Evaluate(Arguments{
@@ -70,6 +80,11 @@ func main() {
 		A: 2, B: 3, Y: 5,
 	}.Wrap())
 	fmt.Println("Evaluating inverted linear model:", result, err)
+
+	result, err = invertedPolynomialModel.Evaluate(Arguments{
+		Y: 1000,
+	}.Wrap())
+	fmt.Println("Evaluating inverted polynomial model:", result, err)
 
 	result, err = numberSplitModel.Evaluate(Arguments{
 		Z: 13.78,
