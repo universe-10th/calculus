@@ -10,13 +10,13 @@ import (
 func SampleModel() *models.Model {
 	// Z = X/Y + W, and corollaries
 	model := models.NewModel()
-	flowZ, _ := models.NewSingleOutputModelFlow(Z, Add(W, Div(X, Y)))
+	flowZ, _ := models.NewExpressionModelFlow(Z, Add(W, Div(X, Y)))
 	model.AddFlow(flowZ)
-	flowW, _ := models.NewSingleOutputModelFlow(W, Sub(Z, Div(X, Y)))
+	flowW, _ := models.NewExpressionModelFlow(W, Sub(Z, Div(X, Y)))
 	model.AddFlow(flowW)
-	flowX, _ := models.NewSingleOutputModelFlow(X, Mul(Y, Sub(Z, W)))
+	flowX, _ := models.NewExpressionModelFlow(X, Mul(Y, Sub(Z, W)))
 	model.AddFlow(flowX)
-	flowY, _ := models.NewSingleOutputModelFlow(Y, Div(X, Sub(Z, W)))
+	flowY, _ := models.NewExpressionModelFlow(Y, Div(X, Sub(Z, W)))
 	model.AddFlow(flowY)
 	return model
 }

@@ -32,14 +32,14 @@ func main() {
 		return
 	})
 
-	linearModel, _ := models.NewSingleOutputModelFlow(Y, linearExpr)
-	quadraticModel, _ := models.NewSingleOutputModelFlow(Z, quadraticExpr)
-	exponentialModel, _ := models.NewSingleOutputModelFlow(W, exponentialExpr)
+	linearModel, _ := models.NewExpressionModelFlow(Y, linearExpr)
+	quadraticModel, _ := models.NewExpressionModelFlow(Z, quadraticExpr)
+	exponentialModel, _ := models.NewExpressionModelFlow(W, exponentialExpr)
 	serialModel, _ := models.NewSerialModelFlow(linearModel, exponentialModel)
 	parallelModel, _ := models.NewParallelModelFlow(linearModel, quadraticModel)
-	invertedLinearModel, _ := models.NewSingleOutputModelFlow(X, invertedLinear)
+	invertedLinearModel, _ := models.NewExpressionModelFlow(X, invertedLinear)
 	numberSplitModel, _ := implementations.NewNumberSplitModelFlow(Z, Y, X)
-	invertedPolynomialModel, _ := models.NewSingleOutputModelFlow(X, invertedPolynomial)
+	invertedPolynomialModel, _ := models.NewExpressionModelFlow(X, invertedPolynomial)
 
 	fmt.Println("Expected input for linear model:", linearModel.Input())
 	fmt.Println("Expected input for quadratic model:", quadraticModel.Input())
