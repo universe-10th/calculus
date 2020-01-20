@@ -6,23 +6,6 @@ import (
 )
 
 
-func Cmp(a, b sets.Number) int {
-	cast := sets.UpCast(a, b)
-	a = cast[0]
-	b = cast[1]
-	switch va := a.(type) {
-	case *big.Int:
-		return va.Cmp(b.(*big.Int))
-	case *big.Rat:
-		return va.Cmp(b.(*big.Rat))
-	case *big.Float:
-		return va.Cmp(b.(*big.Float))
-	default:
-		panic("cannot compare non-*big.(Int, Float, Rat) values")
-	}
-}
-
-
 func IsNegative(value sets.Number) bool {
 	switch c := value.(type) {
 	case *big.Float:
